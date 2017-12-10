@@ -1,8 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*The code works as follows:
+1)Create the node class.
+2)Reads the text from a file and stores it in a string, count the number of repetition of each character and stores it in frequency array.
+3)each character has a node and is inserted in the priorit queque according to the frequecnies, least repeated on top.
+4)Build the tree of huffman
+5)creates a Treemap ( Tree data structure cool gedan :D )of character and the corresponding code.
+6)encode the text!
+
+#To do work:
+1) decode
+2) this code handles only alphabetics, we need to make it handle numbers and all other symbols as well.
+3) work on folders
+*/
 package huffman;
 
 import java.io.BufferedReader;
@@ -21,7 +29,6 @@ public class Huffman {
     static PriorityQueue<Node> nodes = new PriorityQueue<>((o1, o2) -> (o1.value < o2.value) ? -1 : 1);
     static TreeMap<Character, String> codes = new TreeMap<>();
     static int[] frequencies = new int[128];
-    //static String text = "";
     static String encoded = "";
 
 //    public static void main(String[] args) {
@@ -33,6 +40,8 @@ public class Huffman {
         }
     }
 
+    //the whole file is put into one String and then iterate over this string and count the number each letter was repeated 
+    //and store it in the frequencies array
     static String parseFile(String fileName) {
         BufferedReader input = null;
         // Store the contents of the file in a string
@@ -63,7 +72,6 @@ public class Huffman {
         int letter;
         init_freq_array();
 
-        // Scan each symbol to fill S and compute total_letters
         for (int position = 0; position < s.length(); position++) {
             // if the letter is in upper case convert it to lower case
             if (s.charAt(position) >= 65 && s.charAt(position) <= 90) {
@@ -81,15 +89,14 @@ public class Huffman {
 
     }
 
-     static void handleNewText(String text) {
-        nodes.clear();
-        codes.clear();
+    static void applyHuffman(String text) {
+
         encoded = "";
-        calc_frequencies_percnt(nodes, true, text);
+        calc_frequencies_percnt(nodes, text);
         buildTree(nodes);
-        generateCodes(nodes.peek(), "");
+        createCode(nodes.peek(), "");
         printCodes();
-        System.out.println("-- Encoding in process --");
+        System.out.println("Encoded Text!");
         encodeText(text);
     }
 
@@ -106,32 +113,35 @@ public class Huffman {
             vector.add(new Node(vector.poll(), vector.poll()));
         }
     }
+    //print the code for each letter in the text.
 
     private static void printCodes() {
-        System.out.println("--- Printing Codes ---");
+        System.out.println("Codes for each letter: ");
         codes.forEach((k, v) -> System.out.println("'" + k + "' : " + v));
     }
 
-    static void calc_frequencies_percnt(PriorityQueue<Node> vector, boolean printIntervals, String paragraph) {
+    //get the frequency of each letter in the text inserted and add it in the priority queue.
+    static void calc_frequencies_percnt(PriorityQueue<Node> vector, String paragraph) {
 
         for (int i = 0; i < frequencies.length; i++) {
             if (frequencies[i] > 0) {
-                vector.add(new Node(frequencies[i] / ((paragraph.length()-1) * 1.0), ((char) (i+96)) + ""));
-                if (printIntervals) {
-                    System.out.println("'" + ((char) (i + 96)) + "' : " + frequencies[i] / ((paragraph.length() - 1) * 1.0));
-                }
+                vector.add(new Node(frequencies[i] / ((paragraph.length() - 1) * 1.0), ((char) (i + 96)) + ""));
+
+                System.out.println("'" + ((char) (i + 96)) + "' : " + frequencies[i] / ((paragraph.length() - 1) * 1.0));
+
             }
         }
     }
 
-    private static void generateCodes(Node node, String s) {
+    //create code for each node, left is add zero right is add 1.
+    private static void createCode(Node node, String s) {
         if (node != null) {
             if (node.right != null) {
-                generateCodes(node.right, s + "1");
+                createCode(node.right, s + "1");
             }
 
             if (node.left != null) {
-                generateCodes(node.left, s + "0");
+                createCode(node.left, s + "0");
             }
 
             if (node.left == null && node.right == null) {

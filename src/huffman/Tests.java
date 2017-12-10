@@ -35,7 +35,7 @@ public class Tests {
         System.out.println(((char) 10));
         System.out.println("hiiiiiiiiii");
         
-        Huffman.handleNewText(file);
+        Huffman.applyHuffman(file);
 
     }
 
