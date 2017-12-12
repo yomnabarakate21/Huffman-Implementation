@@ -8,7 +8,6 @@
 
 #To do work:
 1) decode
-2) this code handles only alphabetics, we need to make it handle numbers and all other symbols as well.
 3) work on folders
 */
 package huffman;
@@ -28,7 +27,7 @@ public class Huffman {
 
     static PriorityQueue<Node> nodes = new PriorityQueue<>((o1, o2) -> (o1.value < o2.value) ? -1 : 1);
     static TreeMap<Character, String> codes = new TreeMap<>();
-    static int[] frequencies = new int[128];
+    static int[] frequencies = new int[64];
     static String encoded = "";
 
 //    public static void main(String[] args) {
@@ -43,6 +42,7 @@ public class Huffman {
     //the whole file is put into one String and then iterate over this string and count the number each letter was repeated 
     //and store it in the frequencies array
     static String parseFile(String fileName) {
+		
         BufferedReader input = null;
         // Store the contents of the file in a string
         StringBuilder contents = new StringBuilder();
@@ -73,7 +73,8 @@ public class Huffman {
         init_freq_array();
 
         for (int position = 0; position < s.length(); position++) {
-            // if the letter is in upper case convert it to lower case
+			
+			// if the letter is in upper case convert it to lower case
             if (s.charAt(position) >= 65 && s.charAt(position) <= 90) {
 
                 letter = s.charAt(position) + 32;
@@ -83,10 +84,15 @@ public class Huffman {
 
                 letter = s.charAt(position);
                 frequencies[letter - 96] = frequencies[letter - 96] + 1;
-            }
+           
+            }//if it is a symbol or number
+			else if (s.charAt(position) >= 21 && s.charAt(position) <= 64) {
+				letter = s.charAt(position);
+                frequencies[letter] = frequencies[letter] + 1;
+
+			 }
         }
         return s;
-
     }
 
     static void applyHuffman(String text) {
@@ -104,6 +110,7 @@ public class Huffman {
         encoded = "";
         for (int i = 0; i < text.length(); i++) {
             encoded += codes.get(text.charAt(i));
+             encoded += " ";
         }
         System.out.println("Encoded Text: " + encoded);
     }
@@ -117,20 +124,29 @@ public class Huffman {
 
     private static void printCodes() {
         System.out.println("Codes for each letter: ");
-        codes.forEach((k, v) -> System.out.println("'" + k + "' : " + v));
+        codes.forEach((k,v) -> System.out.println("'" + k + "' : " + v));
     }
 
     //get the frequency of each letter in the text inserted and add it in the priority queue.
     static void calc_frequencies_percnt(PriorityQueue<Node> vector, String paragraph) {
 
         for (int i = 0; i < frequencies.length; i++) {
+			
             if (frequencies[i] > 0) {
+				if  (i<=32){
                 vector.add(new Node(frequencies[i] / ((paragraph.length() - 1) * 1.0), ((char) (i + 96)) + ""));
 
                 System.out.println("'" + ((char) (i + 96)) + "' : " + frequencies[i] / ((paragraph.length() - 1) * 1.0));
 
             }
+			else if (i>32){
+				    vector.add(new Node(frequencies[i] / ((paragraph.length() - 1) * 1.0), ((char) (i)) + ""));
+
+                System.out.println("'" + ((char) (i)) + "' : " + frequencies[i] / ((paragraph.length() - 1) * 1.0));
+				
+			}
         }
+    }
     }
 
     //create code for each node, left is add zero right is add 1.
