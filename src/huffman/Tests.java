@@ -37,6 +37,8 @@ public class Tests {
         System.out.println("hiiiiiiiiii");
         
         Huffman.applyHuffman(file);
+        Huffman.writeEncodedFile(Huffman.encoded);
+        
 
     }
 

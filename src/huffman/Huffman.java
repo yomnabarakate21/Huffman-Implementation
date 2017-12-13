@@ -12,11 +12,16 @@
 package huffman;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -29,10 +34,12 @@ public class Huffman {
     static int[] frequencies = new int[128];
     static String encoded = "";
     static String decoded = "";
-    static StringBuilder encoded_builder = new StringBuilder() ; 
+    static StringBuilder encoded_builder = new StringBuilder();
+    static byte[] encoded_bytes;
 //    public static void main(String[] args) {
 //
 //    }
+
     static void init_freq_array() {
         for (int i = 0; i < frequencies.length; i++) {
             frequencies[i] = 0;
@@ -74,11 +81,9 @@ public class Huffman {
 
         for (int position = 0; position < s.length(); position++) {
 
-            
-                letter = s.charAt(position);
-                frequencies[letter] = frequencies[letter] + 1;
+            letter = s.charAt(position);
+            frequencies[letter] = frequencies[letter] + 1;
 
-            
         }
         return s;
     }
@@ -96,11 +101,43 @@ public class Huffman {
         decodeText();
     }
 
+    static void writeEncodedFile(String encoded) {
+
+       int temp_byte;
+        String temp_string;
+        try {
+
+            OutputStream outputstream = new FileOutputStream("encoded.txt");
+            for (int i = 0; i < encoded.length(); i += 8) {
+                if (i + 8 < encoded.length()) {
+                    
+                    temp_string = encoded.substring(i, i + 8);
+                 
+                
+                } else {
+                    temp_string = encoded.substring(i);
+                 //   while(temp_string.length()<8)
+                   //     temp_string = "0" + temp_string;
+                    
+                    
+                }
+                temp_byte = Integer.parseInt(temp_string,2);
+                outputstream.write(temp_byte);
+
+            }
+            outputstream.close();
+
+        } catch (IOException ex) {
+            Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     private static void encodeText(String text) {
         encoded = "";
         for (int i = 0; i < text.length(); i++) {
             encoded_builder.append(codes.get(text.charAt(i)));
-                        // encoded += " ";
+            // encoded += " ";
         }
         encoded = encoded_builder.toString();
         System.out.println("Encoded Text: " + encoded);
@@ -113,8 +150,8 @@ public class Huffman {
         String temp = "";
         for (int i = 0; i < encoded.length(); i++) {
             if (n.isLeaf()) {
-                  encoded_builder.append(n.character);
-               
+                encoded_builder.append(n.character);
+
                 n = nodes.peek();
 
             }
@@ -129,8 +166,8 @@ public class Huffman {
 
         }
         decoded = encoded_builder.toString();
-       System.out.println("Decoded Text: " + decoded);
-       System.out.println("Decoded Text: ");
+        System.out.println("Decoded Text: " + decoded);
+        System.out.println("Decoded Text: ");
     }
 
     private static void buildTree(PriorityQueue<Node> vector) {
@@ -142,7 +179,7 @@ public class Huffman {
 
     private static void printCodes() {
         System.out.println("Codes for each letter: ");
-       codes.forEach((k, v) -> System.out.println("'" + k + "' : " + v));
+        codes.forEach((k, v) -> System.out.println("'" + k + "' : " + v));
     }
 
     //get the frequency of each letter in the text inserted and add it in the priority queue.
@@ -150,14 +187,12 @@ public class Huffman {
 
         for (int i = 0; i < frequencies.length; i++) {
 
-           
-                    vector.add(new Node(frequencies[i] / ((paragraph.length() - 1) * 1.0), ((char) (i)) + ""));
+            vector.add(new Node(frequencies[i] / ((paragraph.length() - 1) * 1.0), ((char) (i)) + ""));
 
-                    System.out.println("'" + ((char) (i)) + "' : " + frequencies[i] / ((paragraph.length() - 1) * 1.0));
+            System.out.println("'" + ((char) (i)) + "' : " + frequencies[i] / ((paragraph.length() - 1) * 1.0));
 
-                
-            }
-       
+        }
+
     }
 
     //create code for each node, left is add zero right is add 1.
