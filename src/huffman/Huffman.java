@@ -30,7 +30,7 @@ public class Huffman {
     static int[] frequencies = new int[128];
     static String encoded = "";
     static String decoded = "";
-
+    static StringBuilder encoded_builder = new StringBuilder() ; 
 //    public static void main(String[] args) {
 //
 //    }
@@ -99,9 +99,10 @@ public class Huffman {
     private static void encodeText(String text) {
         encoded = "";
         for (int i = 0; i < text.length(); i++) {
-            encoded += codes.get(text.charAt(i));
-            // encoded += " ";
+            encoded_builder.append(text.charAt(i));
+                        // encoded += " ";
         }
+        encoded = encoded_builder.toString();
         System.out.println("Encoded Text: " + encoded);
     }
 
