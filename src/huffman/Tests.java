@@ -28,7 +28,7 @@ public class Tests {
 
     public static void main(String[] args) {
         String file = testFile();
-        System.out.println(file);
+        //System.out.println(file);
         System.out.println("the length of file is   " + file.length());
         calc_percentage_test(file);
         System.out.println("the length of file is ");

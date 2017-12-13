@@ -5,7 +5,6 @@
 4)Build the tree of huffman
 5)creates a Treemap ( Tree data structure cool gedan :D )of character and the corresponding code.
 6)encode the text!
-
 #To do work:
 1) decode
 3) work on folders
@@ -93,13 +92,14 @@ public class Huffman {
         printCodes();
         System.out.println("Encoded Text!");
         encodeText(text);
+        System.out.println("Decoded Text!");
         decodeText();
     }
 
     private static void encodeText(String text) {
         encoded = "";
         for (int i = 0; i < text.length(); i++) {
-            encoded_builder.append(text.charAt(i));
+            encoded_builder.append(codes.get(text.charAt(i)));
                         // encoded += " ";
         }
         encoded = encoded_builder.toString();
@@ -113,8 +113,8 @@ public class Huffman {
         String temp = "";
         for (int i = 0; i < encoded.length(); i++) {
             if (n.isLeaf()) {
-
-                decoded += n.character;
+                  encoded_builder.append(n.character);
+               
                 n = nodes.peek();
 
             }
@@ -128,7 +128,9 @@ public class Huffman {
             }
 
         }
-        System.out.println("Decoded Text: " + decoded);
+        decoded = encoded_builder.toString();
+       System.out.println("Decoded Text: " + decoded);
+       System.out.println("Decoded Text: ");
     }
 
     private static void buildTree(PriorityQueue<Node> vector) {
@@ -140,7 +142,7 @@ public class Huffman {
 
     private static void printCodes() {
         System.out.println("Codes for each letter: ");
-        codes.forEach((k, v) -> System.out.println("'" + k + "' : " + v));
+       codes.forEach((k, v) -> System.out.println("'" + k + "' : " + v));
     }
 
     //get the frequency of each letter in the text inserted and add it in the priority queue.
