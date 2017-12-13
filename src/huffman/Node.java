@@ -28,5 +28,9 @@ public class Node {
             this.left = right;
         }
     }
+    public boolean isLeaf() {
+            assert ((left == null) && (right == null)) || ((left != null) && (right != null));
+            return (left == null) && (right == null);
+        }
     
 }

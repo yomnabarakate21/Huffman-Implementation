@@ -15,9 +15,7 @@ public class Tests {
         String filename = "input.txt";
         String text = Huffman.parseFile(filename);
         for (int i = 0; i < Huffman.frequencies.length; i++) {
-            if(i<=32)
-            System.out.println("This is the frequecny of  " + ((char) (i + 96)) + "  is   " + Huffman.frequencies[i]);
-            else
+          
               System.out.println("This is the frequecny of  " + ((char) (i)) + "  is   " + Huffman.frequencies[i]);  
         }
         return text;

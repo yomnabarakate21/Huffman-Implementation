@@ -9,7 +9,7 @@
 #To do work:
 1) decode
 3) work on folders
-*/
+ */
 package huffman;
 
 import java.io.BufferedReader;
@@ -27,8 +27,9 @@ public class Huffman {
 
     static PriorityQueue<Node> nodes = new PriorityQueue<>((o1, o2) -> (o1.value < o2.value) ? -1 : 1);
     static TreeMap<Character, String> codes = new TreeMap<>();
-    static int[] frequencies = new int[64];
+    static int[] frequencies = new int[128];
     static String encoded = "";
+    static String decoded = "";
 
 //    public static void main(String[] args) {
 //
@@ -42,7 +43,7 @@ public class Huffman {
     //the whole file is put into one String and then iterate over this string and count the number each letter was repeated 
     //and store it in the frequencies array
     static String parseFile(String fileName) {
-		
+
         BufferedReader input = null;
         // Store the contents of the file in a string
         StringBuilder contents = new StringBuilder();
@@ -73,24 +74,12 @@ public class Huffman {
         init_freq_array();
 
         for (int position = 0; position < s.length(); position++) {
-			
-			// if the letter is in upper case convert it to lower case
-            if (s.charAt(position) >= 65 && s.charAt(position) <= 90) {
 
-                letter = s.charAt(position) + 32;
-                frequencies[letter - 96] = frequencies[letter - 96] + 1;
-            } // do not convert if already in lower case
-            else if (s.charAt(position) >= 97 && s.charAt(position) <= 122) {
-
+            
                 letter = s.charAt(position);
-                frequencies[letter - 96] = frequencies[letter - 96] + 1;
-           
-            }//if it is a symbol or number
-			else if (s.charAt(position) >= 21 && s.charAt(position) <= 64) {
-				letter = s.charAt(position);
                 frequencies[letter] = frequencies[letter] + 1;
 
-			 }
+            
         }
         return s;
     }
@@ -104,15 +93,41 @@ public class Huffman {
         printCodes();
         System.out.println("Encoded Text!");
         encodeText(text);
+        decodeText();
     }
 
     private static void encodeText(String text) {
         encoded = "";
         for (int i = 0; i < text.length(); i++) {
             encoded += codes.get(text.charAt(i));
-             encoded += " ";
+            // encoded += " ";
         }
         System.out.println("Encoded Text: " + encoded);
+    }
+
+    private static void decodeText() {
+
+        //left is add zero right is add 1.
+        Node n = nodes.peek();
+        String temp = "";
+        for (int i = 0; i < encoded.length(); i++) {
+            if (n.isLeaf()) {
+
+                decoded += n.character;
+                n = nodes.peek();
+
+            }
+
+            if (Character.toString(encoded.charAt(i)).equals("0")) {
+
+                n = n.left;
+            } else if (Character.toString(encoded.charAt(i)).equals("1")) {
+
+                n = n.right;
+            }
+
+        }
+        System.out.println("Decoded Text: " + decoded);
     }
 
     private static void buildTree(PriorityQueue<Node> vector) {
@@ -124,29 +139,22 @@ public class Huffman {
 
     private static void printCodes() {
         System.out.println("Codes for each letter: ");
-        codes.forEach((k,v) -> System.out.println("'" + k + "' : " + v));
+        codes.forEach((k, v) -> System.out.println("'" + k + "' : " + v));
     }
 
     //get the frequency of each letter in the text inserted and add it in the priority queue.
     static void calc_frequencies_percnt(PriorityQueue<Node> vector, String paragraph) {
 
         for (int i = 0; i < frequencies.length; i++) {
-			
-            if (frequencies[i] > 0) {
-				if  (i<=32){
-                vector.add(new Node(frequencies[i] / ((paragraph.length() - 1) * 1.0), ((char) (i + 96)) + ""));
 
-                System.out.println("'" + ((char) (i + 96)) + "' : " + frequencies[i] / ((paragraph.length() - 1) * 1.0));
+           
+                    vector.add(new Node(frequencies[i] / ((paragraph.length() - 1) * 1.0), ((char) (i)) + ""));
 
+                    System.out.println("'" + ((char) (i)) + "' : " + frequencies[i] / ((paragraph.length() - 1) * 1.0));
+
+                
             }
-			else if (i>32){
-				    vector.add(new Node(frequencies[i] / ((paragraph.length() - 1) * 1.0), ((char) (i)) + ""));
-
-                System.out.println("'" + ((char) (i)) + "' : " + frequencies[i] / ((paragraph.length() - 1) * 1.0));
-				
-			}
-        }
-    }
+       
     }
 
     //create code for each node, left is add zero right is add 1.
