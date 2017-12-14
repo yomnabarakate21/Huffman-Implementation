@@ -12,16 +12,21 @@
 package huffman;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.sound.sampled.LineListener;
 
 /**
  *
@@ -31,8 +36,10 @@ public class Huffman {
 
     static PriorityQueue<Node> nodes = new PriorityQueue<>((o1, o2) -> (o1.value < o2.value) ? -1 : 1);
     static TreeMap<Character, String> codes = new TreeMap<>();
-    static int[] frequencies = new int[128];
-    static String encoded = "";
+    static int[] frequencies = new int[256];
+      ArrayList<String> encodedList = new ArrayList<String>();
+     static ArrayList<String> LineList = new ArrayList<String>();
+    static  String encoded = "";
     static String decoded = "";
     static StringBuilder encoded_builder = new StringBuilder();
     static byte[] encoded_bytes;
@@ -48,18 +55,22 @@ public class Huffman {
 
     //the whole file is put into one String and then iterate over this string and count the number each letter was repeated 
     //and store it in the frequencies array
-    static String parseFile(String fileName) {
+    static String parseFile(String fileName) throws IOException {
 
         BufferedReader input = null;
         // Store the contents of the file in a string
-        StringBuilder contents = new StringBuilder();
+         StringBuilder contents = new StringBuilder();
+         //System.out.println(fileName.substring(fileName.length()-3,fileName.length() )+"      ppppppppppppppp");
+        if(fileName.substring(fileName.length()-3,fileName.length() ).equals("txt")) {
+       
         try {
             FileReader fr = new FileReader(fileName);
             input = new BufferedReader(fr);
 
             String line = "";
             while ((line = input.readLine()) != null) {
-                contents.append(line);
+             ///   LineList.add(line);
+               contents.append(line);
                 contents.append(System.getProperty("line.separator"));
             }
         } catch (IOException e) {
@@ -73,8 +84,26 @@ public class Huffman {
                 e.printStackTrace();
             }
         }
-
+        }
+        
+        else{
+            try {
+                InputStream is = new FileInputStream(fileName);
+                byte buffer;
+                while((buffer=(byte) is.read())!=-1)
+                {
+                    
+                    contents.append((char)buffer);
+                    
+                }
+                
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
         String s = contents.toString();
+        
 
         int letter;
         init_freq_array();
@@ -85,9 +114,9 @@ public class Huffman {
             frequencies[letter] = frequencies[letter] + 1;
 
         }
-        return s;
-    }
-
+       return s;
+    } 
+    
     static void applyHuffman(String text) {
 
         encoded = "";
@@ -103,15 +132,15 @@ public class Huffman {
 
     static void writeEncodedFile(String encoded) {
 
-       int temp_byte;
+       byte temp_byte;
         String temp_string;
         try {
 
-            OutputStream outputstream = new FileOutputStream("encoded.txt");
+            OutputStream outputstream = new FileOutputStream("encoded.bin");
             for (int i = 0; i < encoded.length(); i += 8) {
                 if (i + 8 < encoded.length()) {
                     
-                    temp_string = encoded.substring(i, i + 8);
+                    temp_string = encoded.substring(i, i + 7);
                  
                 
                 } else {
@@ -121,7 +150,7 @@ public class Huffman {
                     
                     
                 }
-                temp_byte = Integer.parseInt(temp_string,2);
+                temp_byte = Byte.parseByte(temp_string,2);
                 outputstream.write(temp_byte);
 
             }
@@ -166,7 +195,7 @@ public class Huffman {
 
         }
         decoded = encoded_builder.toString();
-        System.out.println("Decoded Text: " + decoded);
+       // System.out.println("Decoded Text: " + decoded);
         System.out.println("Decoded Text: ");
     }
 
