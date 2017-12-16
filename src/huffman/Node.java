@@ -1,11 +1,13 @@
 
 package huffman;
 
+import java.io.Serializable;
+
 /**
  *
  * @author yomnabarakat
  */
-public class Node {
+public class Node implements Serializable{
      Node left, right;
     double value;
     String character;

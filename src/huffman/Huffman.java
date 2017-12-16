@@ -19,7 +19,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.Scanner;
@@ -27,22 +29,26 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.LineListener;
+import java.io.*;
 
 /**
  *
  * @author yomnabarakat
  */
-public class Huffman {
+public class Huffman implements Serializable{
 
     static PriorityQueue<Node> nodes = new PriorityQueue<>((o1, o2) -> (o1.value < o2.value) ? -1 : 1);
     static TreeMap<Character, String> codes = new TreeMap<>();
-    static int[] frequencies = new int[256];
+    static int[] frequencies = new int[128];
       ArrayList<String> encodedList = new ArrayList<String>();
      static ArrayList<String> LineList = new ArrayList<String>();
     static  String encoded = "";
     static String decoded = "";
     static StringBuilder encoded_builder = new StringBuilder();
+    static StringBuilder decoded_builder = new StringBuilder();
     static byte[] encoded_bytes;
+    static Node n = new Node(1234,"ppp");
+    
 //    public static void main(String[] args) {
 //
 //    }
@@ -134,9 +140,27 @@ public class Huffman {
 
        byte temp_byte;
         String temp_string;
+        int size=(int)Math.ceil(encoded.length()/8);
+        
         try {
 
-            OutputStream outputstream = new FileOutputStream("encoded.bin");
+            
+            OutputStream outputstream = new FileOutputStream("encoded.txt");
+             ObjectOutputStream objectoutputstream=new ObjectOutputStream(outputstream);
+            byte x = (byte) (size/Math.pow(256,3));
+            
+             x = (byte) (size/Math.pow(256,2)); 
+             x = (byte) (size/Math.pow(256,1));
+              x = (byte) size;
+            
+        outputstream.write(size/(256*3));
+              outputstream.write(size/(256*2));
+              outputstream.write(size/(256));
+            outputstream.write(size);
+            
+           
+            
+    
             for (int i = 0; i < encoded.length(); i += 8) {
                 if (i + 8 < encoded.length()) {
                     
@@ -152,11 +176,21 @@ public class Huffman {
                 }
                 temp_byte = Byte.parseByte(temp_string,2);
                 outputstream.write(temp_byte);
-
-            }
+                 
+               
+         }
+                 //hena el mafrood beygeeb awel 7aga fel queue ye3melaha serialization we ba3dein delete we ye7otaha fel file
+                 //el moshkela eno lama yeegy yo7otaha beysheel elly ablahaa
+         /* while(!nodes.isEmpty())
+          {
+          objectoutputstream.writeObject(nodes.poll());
+          } */
+               objectoutputstream.close();
             outputstream.close();
 
         } catch (IOException ex) {
+            ex.printStackTrace();
+            System.err.println(ex);
             Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -173,13 +207,13 @@ public class Huffman {
     }
 
     private static void decodeText() {
-
+decoded="";
         //left is add zero right is add 1.
         Node n = nodes.peek();
         String temp = "";
         for (int i = 0; i < encoded.length(); i++) {
             if (n.isLeaf()) {
-                encoded_builder.append(n.character);
+                decoded_builder.append(n.character);
 
                 n = nodes.peek();
 
@@ -194,8 +228,8 @@ public class Huffman {
             }
 
         }
-        decoded = encoded_builder.toString();
-       // System.out.println("Decoded Text: " + decoded);
+        decoded = decoded_builder.toString();
+        System.out.println("Decoded Text: " + decoded);
         System.out.println("Decoded Text: ");
     }
 

@@ -11,10 +11,10 @@ import java.io.IOException;
  *
  * @author yomnabarakat
  */
-public class Tests {
+public class Tests implements java.io.Serializable{
 
     static String testFile() throws IOException {
-        String filename = "encoded.bin";
+        String filename ="input.txt";
         String text = Huffman.parseFile(filename);
         for (int i = 0; i < Huffman.frequencies.length; i++) {
           
@@ -31,7 +31,7 @@ public class Tests {
     public static void main(String[] args) throws IOException {
         String file = testFile();
         System.out.println(file);
-       // System.out.println("the length of file is   " + file.length());
+        System.out.println("the length of file is   " + file.length());
         calc_percentage_test(file);
         System.out.println("the length of file is ");
         // the new line is a char of ascii 10
