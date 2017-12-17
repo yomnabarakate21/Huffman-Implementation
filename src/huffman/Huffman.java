@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.LineListener;
 import java.io.*;
+import java.util.*;
 
 /**
  *
@@ -145,7 +146,7 @@ public class Huffman implements Serializable{
         try {
 
             
-            OutputStream outputstream = new FileOutputStream("encoded.txt");
+            OutputStream outputstream = new FileOutputStream("encoded.bin");
              ObjectOutputStream objectoutputstream=new ObjectOutputStream(outputstream);
             byte x = (byte) (size/Math.pow(256,3));
             
@@ -179,12 +180,14 @@ public class Huffman implements Serializable{
                  
                
          }
+            
+            Iterator iterator = nodes.iterator();
                  //hena el mafrood beygeeb awel 7aga fel queue ye3melaha serialization we ba3dein delete we ye7otaha fel file
                  //el moshkela eno lama yeegy yo7otaha beysheel elly ablahaa
-         /* while(!nodes.isEmpty())
+          while(iterator.hasNext())
           {
-          objectoutputstream.writeObject(nodes.poll());
-          } */
+          objectoutputstream.writeObject(iterator.next());
+          } 
                objectoutputstream.close();
             outputstream.close();
 
@@ -206,6 +209,33 @@ public class Huffman implements Serializable{
         System.out.println("Encoded Text: " + encoded);
     }
 
+    
+    static void readEncodedFile()
+    {
+        InputStream is = new InputStream("encoded.txt");
+     
+        int byte_counter  = 0 ;
+        
+                byte buffer;
+                int encoded_size = 0  ;
+                
+                while((buffer=(byte) is.read())!=-1)
+                {
+                    
+                    //contents.append((char)buffer);
+                    if(byte_counter<4) 
+                        encoded_size += (int) Math.pow( buffer, 256*(3-byte_counter) );
+                    
+                    
+                    
+                }
+        
+        
+        
+        
+    }
+    
+    
     private static void decodeText() {
 decoded="";
         //left is add zero right is add 1.
