@@ -11,6 +11,7 @@
  */
 package huffman;
 
+import com.sun.xml.internal.messaging.saaj.packaging.mime.util.ASCIIUtility;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -176,19 +177,39 @@ public class Huffman implements Serializable{
                     
                 }
                 temp_byte = Byte.parseByte(temp_string,2);
-                outputstream.write(temp_byte);
+               outputstream.write(temp_byte);
                  
                
          }
             
-            Iterator iterator = nodes.iterator();
+            
+            Set set = codes.entrySet(); 
+            Iterator iterator = set.iterator();
+            
+          while(iterator.hasNext())
+          {
+                Map.Entry mapentry = (Map.Entry)iterator.next();
+               
+                
+                outputstream.write( ASCIIUtility.getBytes(Character.toString((char) mapentry.getKey()) ));  //byte or int
+                  outputstream.write((char)(28));
+               
+                outputstream.write(ASCIIUtility.getBytes((String) mapentry.getValue()));
+                 outputstream.write((char)(28));
+                
+          } 
+            
+            
+            /*Iterator iterator = nodes.iterator();
                  //hena el mafrood beygeeb awel 7aga fel queue ye3melaha serialization we ba3dein delete we ye7otaha fel file
                  //el moshkela eno lama yeegy yo7otaha beysheel elly ablahaa
-          while(iterator.hasNext())
+         while(iterator.hasNext())
           {
           objectoutputstream.writeObject(iterator.next());
           } 
-               objectoutputstream.close();
+               objectoutputstream.close();*/
+            
+            
             outputstream.close();
 
         } catch (IOException ex) {
@@ -210,26 +231,97 @@ public class Huffman implements Serializable{
     }
 
     
-    static void readEncodedFile()
+   public static void readEncodedFile(String inputfile) 
     {
-        InputStream is = new InputStream("encoded.txt");
+        InputStream is=null;
+        byte temp_key_byte = 0 ;
+        ArrayList<Byte> temp_value = new ArrayList<Byte>();
+        Byte[] temp_key_array =null;
+        Byte[] temp_value_array =null;
+        
+        try {
+            is = new FileInputStream(inputfile);
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
      
         int byte_counter  = 0 ;
-        
+       boolean keyorvalue=true; //true for key
+        int encoded_counter = 0 ;
+        StringBuilder sb = new StringBuilder();
                 byte buffer;
                 int encoded_size = 0  ;
                 
-                while((buffer=(byte) is.read())!=-1)
+                int code_entry_counter = 0 ; 
+                
+        try {
+            while((buffer=(byte) is.read())!=-1)
+            {
+                
+                //contents.append((char)buffer);
+                if(byte_counter<4) {
+                    encoded_size += (int) Math.pow( buffer, 256*(3-byte_counter) );
+                    
+                    byte_counter++;
+                }
+                else if(encoded_counter<encoded_size)
                 {
+                    sb.append(Byte.toString(buffer));
+                    encoded_counter++;
                     
-                    //contents.append((char)buffer);
-                    if(byte_counter<4) 
-                        encoded_size += (int) Math.pow( buffer, 256*(3-byte_counter) );
+                }
+                
+                else{
                     
+                    
+                        if((int)buffer!=28)
+                        
+                        {
+                            
+                            if(keyorvalue)
+                            temp_key_byte=(byte)buffer;
+                           else
+                                temp_value.add((Byte)buffer);
+                                
+                        }
+                        
+                        else
+                        {
+                               
+                             if(!keyorvalue)
+                             {
+                                   temp_value_array = (Byte[]) temp_value.toArray();
+                       
+                           
+                            codes.put((char)temp_key_byte , Arrays.toString(temp_value_array));
+                            
+                            keyorvalue=!keyorvalue;
+                             }
+                            
+                        }
+                        
+                   
+                      
                     
                     
                 }
+                
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
+        
+        encoded = sb.toString();
+        
+        
+        try {
+            is.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         
         

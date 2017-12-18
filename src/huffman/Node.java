@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author yomnabarakat
  */
 public class Node implements Serializable{
-     Node left, right;
+    Node left, right;
     double value;
     String character;
 
@@ -34,5 +34,9 @@ public class Node implements Serializable{
             assert ((left == null) && (right == null)) || ((left != null) && (right != null));
             return (left == null) && (right == null);
         }
+    
+   
+   
+   
     
 }

@@ -40,6 +40,7 @@ public class Tests implements java.io.Serializable{
         
         Huffman.applyHuffman(file);
         Huffman.writeEncodedFile(Huffman.encoded);
+       // Huffman.readEncodedFile("encoded.bin");
 
     }
 
