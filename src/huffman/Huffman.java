@@ -142,23 +142,23 @@ public class Huffman implements Serializable{
 
        byte temp_byte;
         String temp_string;
-        int size=(int)Math.ceil(encoded.length()/8);
+        int size=(int)Math.ceil(encoded.length());
         
         try {
 
             
             OutputStream outputstream = new FileOutputStream("encoded.bin");
-             ObjectOutputStream objectoutputstream=new ObjectOutputStream(outputstream);
-            byte x = (byte) (size/Math.pow(256,3));
+             
+            /*byte x = (byte) (size/Math.pow(256,3));
             
              x = (byte) (size/Math.pow(256,2)); 
              x = (byte) (size/Math.pow(256,1));
               x = (byte) size;
             
-        outputstream.write(size/(256*3));
-              outputstream.write(size/(256*2));
-              outputstream.write(size/(256));
-            outputstream.write(size);
+        outputstream.write((byte)(size/Math.pow(256,3)));
+              outputstream.write((byte)(size/Math.pow(256,2)));
+        outputstream.write((byte)(size/Math.pow(256,1)));
+        outputstream.write((byte)(size/Math.pow(256,0)));*/
             
            
             
@@ -166,7 +166,7 @@ public class Huffman implements Serializable{
             for (int i = 0; i < encoded.length(); i += 8) {
                 if (i + 8 < encoded.length()) {
                     
-                    temp_string = encoded.substring(i, i + 7);
+                    temp_string = encoded.substring(i, i + 8);
                  
                 
                 } else {
@@ -176,11 +176,16 @@ public class Huffman implements Serializable{
                     
                     
                 }
-                temp_byte = Byte.parseByte(temp_string,2);
+//                temp_byte = Byte.decode(temp_string);
+
+
+        temp_byte = (byte) Integer.parseUnsignedInt(temp_string,2);
+                temp_byte=temp_byte;
                outputstream.write(temp_byte);
                  
                
          }
+            outputstream.write((char)28);
             
             
             Set set = codes.entrySet(); 
@@ -246,6 +251,7 @@ public class Huffman implements Serializable{
             Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
         }
     
+        boolean textorcode = true;
      
         int byte_counter  = 0 ;
        boolean keyorvalue=true; //true for key
@@ -261,13 +267,14 @@ public class Huffman implements Serializable{
             {
                 
                 //contents.append((char)buffer);
-                if(byte_counter<4) {
-                    encoded_size += (int) Math.pow( buffer, 256*(3-byte_counter) );
+                /*if(byte_counter<4) {
+                    encoded_size += (int) Math.pow((int) buffer, 256*(3-byte_counter) );
                     
                     byte_counter++;
-                }
-                else if(encoded_counter<encoded_size)
+                }*/
+                if(buffer!=28&&textorcode)
                 {
+                    
                     sb.append(Byte.toString(buffer));
                     encoded_counter++;
                     
@@ -275,7 +282,7 @@ public class Huffman implements Serializable{
                 
                 else{
                     
-                    
+                    textorcode=false;
                         if((int)buffer!=28)
                         
                         {
@@ -315,6 +322,8 @@ public class Huffman implements Serializable{
         
         
         encoded = sb.toString();
+        byte[] byby = encoded.getBytes();
+        
         
         
         try {

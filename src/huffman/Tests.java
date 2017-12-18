@@ -29,6 +29,12 @@ public class Tests implements java.io.Serializable{
     }
 
     public static void main(String[] args) throws IOException {
+        
+        System.out.println("1) compress file");
+        System.out.println("2) decompress file");
+        
+        
+        
         String file = testFile();
         System.out.println(file);
         System.out.println("the length of file is   " + file.length());
@@ -39,8 +45,8 @@ public class Tests implements java.io.Serializable{
         //System.out.println("hiiiiiiiiii");
         
         Huffman.applyHuffman(file);
-        Huffman.writeEncodedFile(Huffman.encoded);
-       // Huffman.readEncodedFile("encoded.bin");
+Huffman.writeEncodedFile(Huffman.encoded);
+ Huffman.readEncodedFile("encoded.bin");
 
     }
 
