@@ -14,11 +14,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.PriorityQueue;
 
 public class ReadFile {
-
-    static int[] frequencies = new int[128];
-
+    
+    public static int[] frequencies = new int[128];
+    static int totalsize;
+    
+    
+    
+//pass 1 for counting the no of text and getting the freq.
     public static void readFileAndPrintCounts(String crunchifyFile) throws FileNotFoundException {
 
         int crunchifyTotalWords = 0;
@@ -27,16 +32,12 @@ public class ReadFile {
 
         String crunchifyLine;
 
-        // Read file contents
-        // The try-with-resources statement is a try statement that declares one or more resources. A resource is an
-        // object that must be closed after the program is finished with it. The try-with-resources statement ensures
-        // that each resource is closed at the end of the statement.
         try (BufferedReader crunchifyBuffer = new BufferedReader(new FileReader(crunchifyFile))) {
             crunchifyLog("========== File Content ==========");
 
             // read each line one by one
             while ((crunchifyLine = crunchifyBuffer.readLine()) != null) {
-                //crunchifyLog(crunchifyLine);
+               
                 crunchifyTotalLines++;
 
                 // ignore multiple white spaces
@@ -56,21 +57,40 @@ public class ReadFile {
             e.printStackTrace();
         }
         crunchifyLog("\n========== Result ==========");
-
+        totalsize= crunchifyTotalCharacters;
         crunchifyLog("* Total Characters: " + crunchifyTotalCharacters);
         crunchifyLog("* Total Words: " + crunchifyTotalWords);
         crunchifyLog("* Toal Lines: " + crunchifyTotalLines);
     }
 
+    
+    
+    
+    
+    
+
     private static void crunchifyLog(String string) {
         System.out.println(string);
     }
-
-    public static void main(String[] args) {
-
-        for (int i = 0; i < frequencies.length; i++) {
+    //initialize each character freq to zero
+    static void init_freq()
+    {
+         for (int i = 0; i < frequencies.length; i++) {
             frequencies[i] = 0;
         }
+    }
+
+
+    //print the freq of each character.
+    static void print_freq()
+    {
+        for (int i = 0; i < frequencies.length; i++) {
+            System.out.println((char) i + "     " + frequencies[i]);
+        }
+    }
+
+   public static void Pass1 (String filename){
+         init_freq();
 
         try {
             String crunchifyFile = "input2.txt";
@@ -78,9 +98,8 @@ public class ReadFile {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        for (int i = 0; i < frequencies.length; i++) {
-            System.out.println((char)i +"     " +frequencies[i]);
-        }
-
+        
+        print_freq();
+        
     }
 }
