@@ -142,60 +142,52 @@ public class Huffman implements Serializable {
 
     }
 
-        static void applyHuffman() {
+    static void applyHuffman() {
 
-        
         init_codes_array();
         calc_frequencies_percnt(nodes, original_size);
         buildTree(nodes);
         createCode(nodes.peek(), "");
 
         printCodes();
-      
-        
+
         System.out.println("Decoded Text!");
         decodeText();
 
     }
-    
+
     static void writeEncodedFile(String encoded) {
 
         byte temp_byte;
         int key = 0;
         String temp_string;
         int temp_int;
-int size=(int)Math.ceil(encoded.length());
-
+        int size = (int) Math.ceil(encoded.length());
 
         //Start writing the encoded text in a binary file
         try {
-            
-            System.out.println("SIZE OF THE ENCODED  "+size);
-             OutputStream out = new FileOutputStream("encoded.bin");
-             
-         
-           byte   x = (byte) (size/Math.pow(2,24));
-            out.write(x);
-             x = (byte) (size/Math.pow(2,16)); 
-             out.write(x);
-             x = (byte) (size/Math.pow(2,8));
-             out.write(x);
-              x = (byte) size;
-              out.write(x);
-              
-              System.out.println("SIZE OF THE ORIGINAL "+original_size);
-               x = (byte) (original_size/Math.pow(2,24));
-            out.write(x);
-             x = (byte) (original_size/Math.pow(2,16)); 
-             out.write(x);
-             x = (byte) (original_size/Math.pow(2,8));
-             out.write(x);
-              x = (byte) original_size;
-              out.write(x);
-            
-               
 
-           
+            System.out.println("SIZE OF THE ENCODED  " + size);
+            OutputStream out = new FileOutputStream("encoded.bin");
+
+            byte x = (byte) (size / Math.pow(2, 24));
+            out.write(x);
+            x = (byte) (size / Math.pow(2, 16));
+            out.write(x);
+            x = (byte) (size / Math.pow(2, 8));
+            out.write(x);
+            x = (byte) size;
+            out.write(x);
+
+            System.out.println("SIZE OF THE ORIGINAL " + original_size);
+            x = (byte) (original_size / Math.pow(2, 24));
+            out.write(x);
+            x = (byte) (original_size / Math.pow(2, 16));
+            out.write(x);
+            x = (byte) (original_size / Math.pow(2, 8));
+            out.write(x);
+            x = (byte) original_size;
+            out.write(x);
 
             for (int i = 0; i < encoded.length(); i += 8) {
                 if (i + 8 < encoded.length()) {
@@ -219,76 +211,63 @@ int size=(int)Math.ceil(encoded.length());
             }
 
             //hena beye3mel file seperator 3alashan yebda2 el array
-           // out.write((char) 28);
-
+            // out.write((char) 28);
             //Start writing the freq of each character in the freq array
             for (int j = 0; j < 128; j++) {
-                if(frequencies[j]!=0){
-                String temp_s = "";
-                String s = Integer.toString(frequencies[j]);
-                //write the letter
-                out.write((char) j);
-                if (s.length() < 4) {
-                    for (int i = 0; i < s.length(); i++) {
-                        if (s.charAt(i) == '2') {
-                            temp_s = "00000010";
-                        } else if (s.charAt(i) == '3') {
-                            temp_s = "00000011";
-                        } else if (s.charAt(i) == '4') {
-                            temp_s = "00000100";
-                        } else if (s.charAt(i) == '5') {
-                            temp_s = "00000101";
-                        } else if (s.charAt(i) == '6') {
-                            temp_s = "00000110";
-                        } else if (s.charAt(i) == '7') {
-                            temp_s = "00000111";
-                        } else if (s.charAt(i) == '8') {
-                            temp_s = "00001000";
-                        } else if (s.charAt(i) == '9') {
-                            temp_s = "00001001";
-                        } else if (s.charAt(i) == '1') {
-                            temp_s = "00000001";
+                if (frequencies[j] != 0) {
+                    String temp_s = "";
+                    String s = Integer.toString(frequencies[j]);
+                    //write the letter
+                    out.write((char) j);
+                    if (s.length() < 4) {
+                        for (int i = 0; i < s.length(); i++) {
+                            if (s.charAt(i) == '2') {
+                                temp_s = "00000010";
+                            } else if (s.charAt(i) == '3') {
+                                temp_s = "00000011";
+                            } else if (s.charAt(i) == '4') {
+                                temp_s = "00000100";
+                            } else if (s.charAt(i) == '5') {
+                                temp_s = "00000101";
+                            } else if (s.charAt(i) == '6') {
+                                temp_s = "00000110";
+                            } else if (s.charAt(i) == '7') {
+                                temp_s = "00000111";
+                            } else if (s.charAt(i) == '8') {
+                                temp_s = "00001000";
+                            } else if (s.charAt(i) == '9') {
+                                temp_s = "00001001";
+                            } else if (s.charAt(i) == '1') {
+                                temp_s = "00000001";
+                            }
+
+                            temp_int = Integer.parseUnsignedInt(temp_s, 2);
+                            temp_byte = (byte) temp_int;
+                            out.write(temp_byte);
+
                         }
-                        
-                         temp_int = Integer.parseUnsignedInt(temp_s, 2);
-                         temp_byte = (byte) temp_int;
-                         out.write(temp_byte);
 
                     }
-                    
-                }
-                   out.write((char) 28);
+                    out.write((char) 28);
 
                 }
-                
+
             }
 
-                  //close the stream.
-                    out.close();
-        }
-
-
-
-//end of the try block
-                catch (IOException ex) {
+            //close the stream.
+            out.close();
+        } //end of the try block
+        catch (IOException ex) {
             ex.printStackTrace();
             System.err.println(ex);
             Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
         }// end of catch block
-            }//end of function
-    
-    
-    
-    
-    
-    
-
-    
+    }//end of function
 
     private static void encodeText(String text) {
-        
+
         encoded = "";
-        for (int i = 0 ; i < text.length()-1 ; i++) {
+        for (int i = 0; i < text.length() - 1; i++) {
             encoded_builder.append(codes[(int) text.charAt(i)]);
             // encoded += " ";
         }
@@ -318,49 +297,47 @@ int size=(int)Math.ceil(encoded.length());
         boolean keyorvalue = true; //true for key
         int encoded_counter = 0;
         StringBuilder sb = new StringBuilder();
-        int value = 0 , key=0;
-        byte buffer,prevbuffer;
+        int value = 0, key = 0;
+        byte buffer, prevbuffer;
         int encoded_size = 0;
-        
+
         int code_entry_counter = 0;
         int fs_counter = 0;
-init_freq_array();
-frequencies[10]=0;
-int digit=0;
-prevbuffer=Byte.MIN_VALUE;
-
+        init_freq_array();
+        frequencies[10] = 0;
+        int digit = 0;
+        prevbuffer = Byte.MIN_VALUE;
 
         try {
             while ((buffer = (byte) is.read()) != -1) {
 
-                
-                if(byte_counter<4) {
+                if (byte_counter < 4) {
 
-                    encoded_size  +=  buffer  * (int)Math.pow(2, ((3-byte_counter)*8));
-                    
-                    byte_counter++;
-                    
-                    if(byte_counter==4) encoded_size = (int)Math.ceil(encoded_size/(double)8);
-                }
-                
-                else if(byte_counter<8) {
+                    encoded_size += buffer * (int) Math.pow(2, ((3 - byte_counter) * 8));
 
-                    original_size  +=  buffer  * (int)Math.pow(2, ((3-(byte_counter-4))*8));
-                    
                     byte_counter++;
-                    
-                    if(byte_counter==8) original_size = (int)Math.ceil(original_size/(double)8);
-                }
-                
-                else if (encoded_counter<encoded_size) {
-                    
-                    String temp = Integer.toBinaryString(buffer&0xFF);
-                    
-                   while (temp.length() < 8 && byte_counter-8!=encoded_size-1) {
-                       temp = "0" + temp;
+
+                    if (byte_counter == 4) {
+                        encoded_size = (int) Math.ceil(encoded_size / (double) 8);
                     }
-                   byte_counter++;
-                   
+                } else if (byte_counter < 8) {
+
+                    original_size += buffer * (int) Math.pow(2, ((3 - (byte_counter - 4)) * 8));
+
+                    byte_counter++;
+
+                    if (byte_counter == 8) {
+                        original_size = (int) Math.ceil(original_size / (double) 8);
+                    }
+                } else if (encoded_counter < encoded_size) {
+
+                    String temp = Integer.toBinaryString(buffer & 0xFF);
+
+                    while (temp.length() < 8 && byte_counter - 8 != encoded_size - 1) {
+                        temp = "0" + temp;
+                    }
+                    byte_counter++;
+
 //if(temp.length()>8){
                     //buffer*=-1;
                     //  buffer--;
@@ -368,29 +345,27 @@ prevbuffer=Byte.MIN_VALUE;
                     // }
                     //else sb.append(temp);
                     sb.append(temp);
-                    
+
                     encoded_counter++;
 
                 } else {
-                       
-                  //  textorcode = false;
-                    if(buffer!=28){
-                    if(keyorvalue){
-                        key = buffer;
-                        keyorvalue=!keyorvalue;
-                        value = 0;
-                        digit=0;
 
+                    //  textorcode = false;
+                    if (buffer != 28) {
+                        if (keyorvalue) {
+                            key = buffer;
+                            keyorvalue = !keyorvalue;
+                            value = 0;
+                            digit = 0;
+
+                        } else {
+                            value += buffer * Math.pow(10, digit);
+                            digit++;
+
+                        }
                     } else {
-                        value+= buffer*Math.pow(10, digit);
-                        digit++;
-                        
-
-                    }
-                    }
-                    else{
-                    keyorvalue=!keyorvalue;
-                    frequencies[key] = value;
+                        keyorvalue = !keyorvalue;
+                        frequencies[key] = value;
                     }
                     /*  if((int)buffer!=28)
                         
@@ -433,13 +408,15 @@ prevbuffer=Byte.MIN_VALUE;
         }
 
         encoded = sb.toString();
-       applyHuffman();  
+        applyHuffman();
 
         try {
             is.close();
         } catch (IOException ex) {
             Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("ORIGINAL SAIZE: " + original_size);
+        System.out.println("ENCODED SAIZE: " + encoded_size);
 
     }
 
@@ -448,7 +425,7 @@ prevbuffer=Byte.MIN_VALUE;
         //left is add zero right is add 1.
         Node n = nodes.peek();
         String temp = "";
-       
+
         for (int i = 0; i < encoded.length(); i++) {
             if (n.isLeaf()) {
                 decoded_builder.append(n.character);
@@ -468,7 +445,7 @@ prevbuffer=Byte.MIN_VALUE;
         }
         decoded = decoded_builder.toString();
         System.out.println("Decoded Text: " + decoded);
-        
+
     }
 
     private static void buildTree(PriorityQueue<Node> vector) {
@@ -500,9 +477,8 @@ prevbuffer=Byte.MIN_VALUE;
         }
 
     }
-    
-    
-    static void calc_frequencies_percnt(PriorityQueue<Node> vector,int size) {
+
+    static void calc_frequencies_percnt(PriorityQueue<Node> vector, int size) {
 
         for (int i = 0; i < frequencies.length; i++) {
             if (frequencies[i] != 0) {

@@ -41,33 +41,33 @@ public class Tests implements java.io.Serializable {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-
-        System.out.println("1) compress file");
-        System.out.println("2) decompress file");
-        System.out.println("3) compress folder");
-        Scanner scanner = new Scanner(System.in);
-        int n = scanner.nextInt();
-       String filename ;
-        if(n==1)
-        {
-             System.out.println("Enter file name to be compressed.");
-             filename = scanner.next();
-             Huffman.applyHuffman(testFile(filename));
-             Huffman.writeEncodedFile(Huffman.encoded);
-             
-               
-        }
-        
-        else if(n==2)
-        {
-            System.out.println("Enter file name to be decompressed.");
-            filename= scanner.next();
-            Huffman.readEncodedFile(filename);
-        }
-        
-        else if(n==3 )
-        {}
+//    public static void main(String[] args) throws IOException {
+//
+//        System.out.println("1) compress file");
+//        System.out.println("2) decompress file");
+//        System.out.println("3) compress folder");
+//        Scanner scanner = new Scanner(System.in);
+//        int n = scanner.nextInt();
+//       String filename ;
+//        if(n==1)
+//        {
+//             System.out.println("Enter file name to be compressed.");
+//             filename = scanner.next();
+//             Huffman.applyHuffman(testFile(filename));
+//             Huffman.writeEncodedFile(Huffman.encoded);
+//             
+//               
+//        }
+//        
+//        else if(n==2)
+//        {
+//            System.out.println("Enter file name to be decompressed.");
+//            filename= scanner.next();
+//            Huffman.readEncodedFile(filename);
+//        }
+//        
+//        else if(n==3 )
+//        {}
 
 
 //        String temp_s = "";
@@ -131,5 +131,5 @@ public class Tests implements java.io.Serializable {
 //            temp_int = Integer.parseUnsignedInt(temp_string, 2);
 //            temp_byte = (byte) temp_int;
 //            System.out.println(temp_byte);
-    }
+  //  }
 
