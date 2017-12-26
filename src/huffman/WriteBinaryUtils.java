@@ -90,7 +90,7 @@ public class WriteBinaryUtils {
 
                 } else {
                     temp_string = encoded.substring(i);
-                    while (temp_string.length() < 8) {
+                    while (temp_string.length() < 8 ) {
                         temp_string = "0" + temp_string;
                     }
 
@@ -110,7 +110,10 @@ public class WriteBinaryUtils {
 
     static void writeHeader(String filename) {
 
-        int size = (int) Math.ceil(HuffmanUtils.encodedSize);
+        
+        int size = (int) Math.ceil(HuffmanUtils.encodedSize/8.0);
+        
+            
         try {
 
             System.out.println("SIZE OF THE ENCODED  " + size);

@@ -6,20 +6,128 @@
 package huffman;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HuffmanUtils {
 
     static PriorityQueue<Node> nodes = new PriorityQueue<>((o1, o2) -> (o1.value < o2.value) ? -1 : 1);
     static String[] codes = new String[128];
-    static int encodedSize=0;
-    static public  ArrayList <String> encoded_lines=new ArrayList<String>();
+    static int encodedSize = 0;
+    static public ArrayList<String> encoded_lines = new ArrayList<String>();
 
+    
+    
     //encode text function
+    public static void readEncodedFile(String inputfile) {
+        InputStream is = null;
+
+        Byte[] temp_key_array = null;
+        String[] temp_value_array = null;
+        char temp_key = ' ';
+        try {
+            is = new FileInputStream(inputfile);
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        int byte_counter = 0;
+        boolean keyorvalue = true; //true for key
+        int encoded_counter = 0;
+        StringBuilder sb = new StringBuilder();
+        int value = 0, key = 0;
+        byte buffer;
+        
+encodedSize=0;
+        init_freq();
+        int digit = 0;
+
+        try {
+            while (true) {
+                buffer = (byte) is.read();
+                if (byte_counter < 4) {
+
+                    encodedSize += Byte.toUnsignedInt(buffer) * (int) Math.pow(2, ((3 - byte_counter) * 8));
+
+                    byte_counter++;
+
+                } else if (byte_counter < 8) {
+
+                    ReadFile.totalsize += Byte.toUnsignedInt(buffer) * (int) Math.pow(2, ((3 - (byte_counter - 4)) * 8));
+
+                    byte_counter++;
+
+                    //read encoded text
+                } else if (encoded_counter < encodedSize) {
+
+                    String temp = Integer.toBinaryString(Byte.toUnsignedInt(buffer));
+
+                    while (temp.length() < 8 && (encoded_counter < encodedSize-1 || encoded_counter < 128 ) ) {
+                        temp = "0" + temp;
+                    }
+                    byte_counter++;
+
+                    sb.append(temp);
+
+                    if (sb.length() > 127) {
+                        
+                        encoded_lines.add(sb.toString());
+                        sb = new StringBuilder();
+                    }
+                    encoded_counter++;
+
+                } else if (buffer != 28) {
+                    if(sb.length()>0)
+                    {
+                        encoded_lines.add(sb.toString());
+                        sb = new StringBuilder();
+                    }
+                    if (keyorvalue) {
+                        if (buffer == -1) {
+                            break;
+                        }
+                        key = (byte) Byte.toUnsignedInt(buffer);
+                        keyorvalue = !keyorvalue;
+                        value = 0;
+                        digit = 0;
+
+                    } else {
+                        value += ((byte) Byte.toUnsignedInt(buffer)) * Math.pow(10, digit);
+                        digit++;
+
+                    }
+                } else {
+                    keyorvalue = !keyorvalue;
+                    ReadFile.frequencies[key] = value;
+
+                } 
+
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        
+        applyHuffman();
+       // printFreq();
+        try {
+            is.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("ORIGINAL SAIZE: " + ReadFile.totalsize);
+        System.out.println("ENCODED SAIZE: " + encodedSize);
+
+    }
+
     static String encodeText(String text) {
 
         String encoded = "";
@@ -29,10 +137,9 @@ public class HuffmanUtils {
 
         }
         encoded = encoded_builder.toString();
-      
+
         return encoded;
     }
-    
 
     public static void encodeFile(String crunchifyFile) throws FileNotFoundException {
 
@@ -45,16 +152,16 @@ public class HuffmanUtils {
             crunchifyLog("========== File Content ==========");
 
             // read each line one by one
-            
             while ((crunchifyLine = crunchifyBuffer.readLine()) != null) {
 
                 crunchifyTotalLines++;
                 //if last line don't add a new line character.
-               if(ReadFile.totalLine!= crunchifyTotalLines)
-                crunchifyLine= crunchifyLine+(char)10;
+                if (ReadFile.totalLine != crunchifyTotalLines) {
+                    crunchifyLine = crunchifyLine + (char) 10;
+                }
                 String code = encodeText(crunchifyLine);
                 encoded_lines.add(code);
-                encodedSize=encodedSize+code.length();
+                encodedSize = encodedSize + code.length();
                 System.out.println(code);
 
             }
@@ -131,5 +238,23 @@ public class HuffmanUtils {
             System.out.println("'" + (char) i + "' : " + codes[i]);
         }
     }
+    
+    
+    
+    static void applyHuffman() {
+
+       // init_codes_array();
+        calc_frequencies_percnt(nodes, ReadFile.totalsize);
+        buildTree(nodes);
+        createCode(nodes.peek(), "");
+
+        printCodes();
+
+        System.out.println("Decoded Text!");
+       // decodeText();
+
+    }
+    
+    
 
 }
