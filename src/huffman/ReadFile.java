@@ -20,6 +20,7 @@ public class ReadFile {
     
     public static int[] frequencies = new int[128];
     static int totalsize;
+    static int totalLine;
     
     
     
@@ -39,27 +40,24 @@ public class ReadFile {
             while ((crunchifyLine = crunchifyBuffer.readLine()) != null) {
                
                 crunchifyTotalLines++;
+                crunchifyLine=crunchifyLine+(char)10;
 
-                // ignore multiple white spaces
-                String[] myWords = crunchifyLine.replaceAll("\\s+", " ").split(" ");
-
-                for (String s : myWords) {
-                    for (int i = 0; i < s.length(); i++) {
-                        frequencies[s.charAt(i)]++;
-                    }
-                    crunchifyTotalCharacters += s.length();
+                for (int i=0; i<  crunchifyLine.length(); i++) {
+                    frequencies[crunchifyLine.charAt(i)]++;
+                    crunchifyTotalCharacters ++;
                 }
 
-                crunchifyTotalWords += myWords.length;
+                
 
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         crunchifyLog("\n========== Result ==========");
-        totalsize= crunchifyTotalCharacters;
+        frequencies[10]--;
+        totalsize= crunchifyTotalCharacters-1;
+        totalLine=  crunchifyTotalLines;
         crunchifyLog("* Total Characters: " + crunchifyTotalCharacters);
-        crunchifyLog("* Total Words: " + crunchifyTotalWords);
         crunchifyLog("* Toal Lines: " + crunchifyTotalLines);
     }
 
