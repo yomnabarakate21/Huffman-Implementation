@@ -41,37 +41,38 @@ public class Tests implements java.io.Serializable {
         }
     }
 
-//    public static void main(String[] args) throws IOException {
-//
-//        System.out.println("1) compress file");
-//        System.out.println("2) decompress file");
-//        System.out.println("3) compress folder");
-//        Scanner scanner = new Scanner(System.in);
-//        int n = scanner.nextInt();
-//       String filename ;
-//        if(n==1)
-//        {
-//             System.out.println("Enter file name to be compressed.");
-//             filename = scanner.next();
-//             Huffman.applyHuffman(testFile(filename));
-//             Huffman.writeEncodedFile(Huffman.encoded);
-//             
-//               
-//        }
-//        
-//        else if(n==2)
-//        {
-//            System.out.println("Enter file name to be decompressed.");
-//            filename= scanner.next();
-//            Huffman.readEncodedFile(filename);
-//        }
-//        
-//        else if(n==3 )
-//        {}
+   public static void main(String[] args) throws IOException {
 
+       
+       System.out.println( Byte.toUnsignedInt((byte)1));
+        System.out.println("1) compress file");
+        System.out.println("2) decompress file");
+        System.out.println("3) compress folder");
+        Scanner scanner = new Scanner(System.in);
+        int n = scanner.nextInt();
+       String filename ;
+        if(n==1)
+        {
+             System.out.println("Enter file name to be compressed.");
+             filename = scanner.next();
+             Huffman.applyHuffman(testFile(filename));
+             Huffman.writeEncodedFile(Huffman.encoded);
+             
+               
+        }
+        
+        else if(n==2)
+        {
+            System.out.println("Enter file name to be decompressed.");
+            filename= scanner.next();
+            Huffman.readEncodedFile(filename);
+        }
+        
+       else if(n==3 )
+        {}
 
-//        String temp_s = "";
-//        String s = Integer.toString(123);
+    //    String temp_s = "";
+  //      String s = Integer.toString(123);
 //        if (s.length() < 4) {
 //            for (int i = 0; i < s.length(); i++) {
 //                if (s.charAt(i) == '2') {
@@ -99,7 +100,7 @@ public class Tests implements java.io.Serializable {
 //            }
 //         
         }
-
+}
 //        System.out.println(file);
 //        System.out.println("the length of file is   " + file.length());
 //        calc_percentage_test(file);
