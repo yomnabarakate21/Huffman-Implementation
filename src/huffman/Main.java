@@ -1,6 +1,7 @@
 package huffman;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  *
@@ -8,7 +9,7 @@ import java.io.FileNotFoundException;
  */
 public class Main {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, IOException {
 
         ReadFile.Pass1("input2.txt");
         HuffmanUtils.calc_frequencies_percnt(HuffmanUtils.nodes, ReadFile.totalsize);
@@ -16,6 +17,7 @@ public class Main {
         HuffmanUtils.createCode(HuffmanUtils.nodes.peek(), "");
         HuffmanUtils.printCodes();
         HuffmanUtils.encodeFile("input2.txt");
-
+        WriteBinaryUtils.writeFile("new.bin");
+       
     }
 }

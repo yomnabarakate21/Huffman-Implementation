@@ -17,12 +17,11 @@ import java.io.IOException;
 import java.util.PriorityQueue;
 
 public class ReadFile {
-    
+
     public static int[] frequencies = new int[128];
     static int totalsize;
     static int totalLine;
-    
-    
+    public static int freqSize=0;
     
 //pass 1 for counting the no of text and getting the freq.
     public static void readFileAndPrintCounts(String crunchifyFile) throws FileNotFoundException {
@@ -34,70 +33,60 @@ public class ReadFile {
         String crunchifyLine;
 
         try (BufferedReader crunchifyBuffer = new BufferedReader(new FileReader(crunchifyFile))) {
-            crunchifyLog("========== File Content ==========");
 
             // read each line one by one
             while ((crunchifyLine = crunchifyBuffer.readLine()) != null) {
-               
+
                 crunchifyTotalLines++;
-                crunchifyLine=crunchifyLine+(char)10;
+                crunchifyLine = crunchifyLine + (char) 10;
 
-                for (int i=0; i<  crunchifyLine.length(); i++) {
+                for (int i = 0; i < crunchifyLine.length(); i++) {
                     frequencies[crunchifyLine.charAt(i)]++;
-                    crunchifyTotalCharacters ++;
+                    crunchifyTotalCharacters++;
                 }
-
-                
 
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         crunchifyLog("\n========== Result ==========");
+        //remove extra line character and dec size by one.
         frequencies[10]--;
-        totalsize= crunchifyTotalCharacters-1;
-        totalLine=  crunchifyTotalLines;
+        totalsize = crunchifyTotalCharacters - 1;
+        totalLine = crunchifyTotalLines;
         crunchifyLog("* Total Characters: " + crunchifyTotalCharacters);
         crunchifyLog("* Toal Lines: " + crunchifyTotalLines);
     }
 
-    
-    
-    
-    
-    
-
     private static void crunchifyLog(String string) {
         System.out.println(string);
     }
+
     //initialize each character freq to zero
-    static void init_freq()
-    {
-         for (int i = 0; i < frequencies.length; i++) {
+    static void init_freq() {
+        for (int i = 0; i < frequencies.length; i++) {
             frequencies[i] = 0;
         }
     }
 
-
     //print the freq of each character.
-    static void print_freq()
-    {
+    static void print_freq() {
         for (int i = 0; i < frequencies.length; i++) {
             System.out.println((char) i + "     " + frequencies[i]);
         }
     }
 
-   public static void Pass1 (String filename){
-         init_freq();
+    public static void Pass1(String filename) {
+        init_freq();
 
         try {
-            String crunchifyFile = "input2.txt";
-            readFileAndPrintCounts(crunchifyFile);
+           
+            readFileAndPrintCounts(filename);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        
+
         print_freq();
-        
+
     }
 }

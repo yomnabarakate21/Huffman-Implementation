@@ -9,12 +9,15 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 public class HuffmanUtils {
 
     static PriorityQueue<Node> nodes = new PriorityQueue<>((o1, o2) -> (o1.value < o2.value) ? -1 : 1);
     static String[] codes = new String[128];
+    static int encodedSize=0;
+    static public  ArrayList <String> encoded_lines=new ArrayList<String>();
 
     //encode text function
     static String encodeText(String text) {
@@ -26,9 +29,10 @@ public class HuffmanUtils {
 
         }
         encoded = encoded_builder.toString();
-
+      
         return encoded;
     }
+    
 
     public static void encodeFile(String crunchifyFile) throws FileNotFoundException {
 
@@ -45,9 +49,12 @@ public class HuffmanUtils {
             while ((crunchifyLine = crunchifyBuffer.readLine()) != null) {
 
                 crunchifyTotalLines++;
+                //if last line don't add a new line character.
                if(ReadFile.totalLine!= crunchifyTotalLines)
                 crunchifyLine= crunchifyLine+(char)10;
                 String code = encodeText(crunchifyLine);
+                encoded_lines.add(code);
+                encodedSize=encodedSize+code.length();
                 System.out.println(code);
 
             }
