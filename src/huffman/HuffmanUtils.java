@@ -23,10 +23,61 @@ public class HuffmanUtils {
     static int encodedSize = 0;
     static public ArrayList<String> encoded_lines = new ArrayList<String>();
 
-    
-    
+    // else if (count >= 16) {
+//            if (count % 16 == 0) {
+//                 HuffmanUtils.encoded_lines.add(encodedLine);
+//            } else {
+//                newEncodedLine = encodedLine.substring(0, 16);
+//                extra = encodedLine.substring(16, encodedLine.length());
+//                 HuffmanUtils.encoded_lines.add(newEncodedLine);
+//                 return extra;
+//            }
+//                }
+//        else if (count >= 16) {
+//            if (count % 16 == 0) {
+//                 HuffmanUtils.encoded_lines.add(encodedLine);
+//            } else {
+//                newEncodedLine = encodedLine.substring(0, 16);
+//                extra = encodedLine.substring(16, encodedLine.length());
+//                 HuffmanUtils.encoded_lines.add(newEncodedLine);
+//                 return extra;
+//            }
+//        } else if (count >= 8) {
+//            if (count % 8 == 0) {
+//                 HuffmanUtils.encoded_lines.add(encodedLine);
+//            } else {
+//                newEncodedLine = encodedLine.substring(0, 8);
+//                extra = encodedLine.substring(8, encodedLine.length());
+//                  HuffmanUtils.encoded_lines.add(newEncodedLine);
+//                return extra;
+//            }
+//        }
+    //adjust size 
+    public static String adjustSize(String pre, String encodedLineGiven) {
+        int count = encodedLineGiven.length() + pre.length();
+        String encodedLine = pre + encodedLineGiven;
+        String newEncodedLine = "";
+        String extra = "";                //ALELTYYYYYYYYYYY EL ARKAAAAAAAAM !!!!!
+        if (count >= 8) {
+            if (count == 8) {
+                HuffmanUtils.encoded_lines.add(encodedLine);
+                extra = "";
+                return extra;
+            } else {
+                newEncodedLine = encodedLine.substring(0, 8);
+                extra = encodedLine.substring(8, encodedLine.length());
+                HuffmanUtils.encoded_lines.add(newEncodedLine);
+                return extra;
+            }
+        }
+
+        extra = encodedLine;
+        return extra;
+
+    }
+
     //encode text function
-    public static void readEncodedFile(String inputfile) {
+    public static void readEncodedFile(String inputfile) {  //leh>
         InputStream is = null;
 
         Byte[] temp_key_array = null;
@@ -45,8 +96,8 @@ public class HuffmanUtils {
         StringBuilder sb = new StringBuilder();
         int value = 0, key = 0;
         byte buffer;
-        
-encodedSize=0;
+
+        encodedSize = 0;
         init_freq();
         int digit = 0;
 
@@ -70,7 +121,7 @@ encodedSize=0;
 
                     String temp = Integer.toBinaryString(Byte.toUnsignedInt(buffer));
 
-                    while (temp.length() < 8 && (encoded_counter < encodedSize-1 || encoded_counter < 128 ) ) {
+                    while (temp.length() < 8 && (encoded_counter < encodedSize - 1 || encoded_counter < 128)) {
                         temp = "0" + temp;
                     }
                     byte_counter++;
@@ -78,15 +129,14 @@ encodedSize=0;
                     sb.append(temp);
 
                     if (sb.length() > 127) {
-                        
+
                         encoded_lines.add(sb.toString());
                         sb = new StringBuilder();
                     }
                     encoded_counter++;
 
                 } else if (buffer != 28) {
-                    if(sb.length()>0)
-                    {
+                    if (sb.length() > 0) {
                         encoded_lines.add(sb.toString());
                         sb = new StringBuilder();
                     }
@@ -108,16 +158,15 @@ encodedSize=0;
                     keyorvalue = !keyorvalue;
                     ReadFile.frequencies[key] = value;
 
-                } 
+                }
 
             }
         } catch (IOException ex) {
             Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        
         applyHuffman();
-       // printFreq();
+        // printFreq();
         try {
             is.close();
         } catch (IOException ex) {
@@ -137,7 +186,6 @@ encodedSize=0;
 
         }
         encoded = encoded_builder.toString();
-
         return encoded;
     }
 
@@ -145,7 +193,7 @@ encodedSize=0;
 
         int crunchifyTotalLines = 0;
         int crunchifyTotalCharacters = 0;
-
+        String previous = "";
         String crunchifyLine;
 
         try (BufferedReader crunchifyBuffer = new BufferedReader(new FileReader(crunchifyFile))) {
@@ -160,16 +208,38 @@ encodedSize=0;
                     crunchifyLine = crunchifyLine + (char) 10;
                 }
                 String code = encodeText(crunchifyLine);
-                encoded_lines.add(code);
-                encodedSize = encodedSize + code.length();
-                System.out.println(code);
+                previous = HuffmanUtils.adjustSize(previous, code);
 
             }
-        } catch (IOException e) {
+
+            if (previous.length() <= 8) {
+
+                HuffmanUtils.encoded_lines.add(previous);
+            } else {
+                boolean flag = true;
+                while (flag) {
+                    if (previous.length() <= 8) {
+                        flag = false;
+                        HuffmanUtils.encoded_lines.add(previous);
+                    } else {
+                        String code = previous.substring(0, 8);
+                        HuffmanUtils.encoded_lines.add(code);
+                        if (previous.length() > 8) {
+                            previous = previous.substring(8, previous.length());
+                        } else {
+                            flag = false;
+                        }
+                    }
+                    
+                }
+            }
+        }catch (IOException e) {
             e.printStackTrace();
         }
+        }
+        
 
-    }
+    
 
     private static void crunchifyLog(String string) {
         System.out.println(string);
@@ -238,12 +308,10 @@ encodedSize=0;
             System.out.println("'" + (char) i + "' : " + codes[i]);
         }
     }
-    
-    
-    
+
     static void applyHuffman() {
 
-       // init_codes_array();
+        // init_codes_array();
         calc_frequencies_percnt(nodes, ReadFile.totalsize);
         buildTree(nodes);
         createCode(nodes.peek(), "");
@@ -251,10 +319,8 @@ encodedSize=0;
         printCodes();
 
         System.out.println("Decoded Text!");
-       // decodeText();
+        // decodeText();
 
     }
-    
-    
 
 }
