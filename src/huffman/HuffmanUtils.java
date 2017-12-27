@@ -62,14 +62,14 @@ public class HuffmanUtils {
         String encodedLine = pre + encodedLineGiven;
         String newEncodedLine = "";
         String extra = "";                //ALELTYYYYYYYYYYY EL ARKAAAAAAAAM !!!!!
-        if (count >= 8) {  
-            if (count == 8) {
+        if (count >= 1024) {  
+            if (count == 1024) {
                 HuffmanUtils.encoded_lines.add(encodedLine);
                 extra = "";
                 return extra;
             } else {
-                newEncodedLine = encodedLine.substring(0, 8);
-                extra = encodedLine.substring(8, encodedLine.length());
+                newEncodedLine = encodedLine.substring(0, 1024);
+                extra = encodedLine.substring(1024, encodedLine.length());
                 HuffmanUtils.encoded_lines.add(newEncodedLine);
                 return extra;
             }
@@ -134,14 +134,14 @@ public class HuffmanUtils {
 
                     String temp = Integer.toBinaryString(Byte.toUnsignedInt(buffer));
 
-                    while (temp.length() < 8 && (encoded_counter < encodedSize - 1 || encoded_counter < 128)) {
+                    while (temp.length() < 8 && (encoded_counter < encodedSize - 1 || encoded_counter < 1024)) {
                         temp = "0" + temp;
                     }
                     byte_counter++;
 
                     sb.append(temp);
 
-                    if (sb.length() > 127) {
+                    if (sb.length() > 1023) {
 
                         encoded_lines.add(sb.toString());
                         sb = new StringBuilder();
@@ -179,7 +179,7 @@ public class HuffmanUtils {
         }
 
         applyHuffman();
-       printDecoded();
+       //printDecoded();
        
         // printFreq();
         try {
@@ -227,20 +227,20 @@ public class HuffmanUtils {
 
             }
 
-            if (previous.length() <= 8) {
+            if (previous.length() <= 1024) {
 
                 HuffmanUtils.encoded_lines.add(previous);
             } else {
                 boolean flag = true;
                 while (flag) {
-                    if (previous.length() <= 8) {
+                    if (previous.length() <= 1024) {
                         flag = false;
                         HuffmanUtils.encoded_lines.add(previous);
                     } else {
-                        String code = previous.substring(0, 8);
+                        String code = previous.substring(0, 1024);
                         HuffmanUtils.encoded_lines.add(code);
-                        if (previous.length() > 8) {
-                            previous = previous.substring(8, previous.length());
+                        if (previous.length() > 1024) {
+                            previous = previous.substring(1024, previous.length());
                         } else {
                             flag = false;
                         }

@@ -113,7 +113,9 @@ public class WriteBinaryUtils {
 
         
         int size = (int) Math.ceil(HuffmanUtils.get_encoded_size(HuffmanUtils.encoded_lines)/8.0);
-        
+             // int size = (1024*(HuffmanUtils.encoded_lines.size()-1))+HuffmanUtils.encoded_lines.get(HuffmanUtils.encoded_lines.size()-1).length();
+       
+         //size =(int) Math.ceil(size/8);
             
         try {
 

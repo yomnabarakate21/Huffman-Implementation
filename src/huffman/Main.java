@@ -55,9 +55,9 @@ public class Main {
             HuffmanUtils.createCode(HuffmanUtils.nodes.peek(), "");
             HuffmanUtils.printCodes();
             HuffmanUtils.encodeFile(filename);
-                     for (int i = 0; i < HuffmanUtils.encoded_lines.size(); i++) {
-            System.out.println(HuffmanUtils.encoded_lines.get(i));
-         }
+//                     for (int i = 0; i < HuffmanUtils.encoded_lines.size(); i++) {
+//            System.out.println(HuffmanUtils.encoded_lines.get(i));
+//         }
             WriteBinaryUtils.writeFile("new.bin");
 
         } else if (n == 2) {
