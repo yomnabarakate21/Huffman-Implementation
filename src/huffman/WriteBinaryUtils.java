@@ -5,6 +5,7 @@
  */
 package huffman;
 
+import com.sun.org.apache.bcel.internal.generic.GOTO;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -79,28 +80,58 @@ public class WriteBinaryUtils {
         int temp_int;
         byte temp_byte;
         OutputStream out = new FileOutputStream(filename, true);
+int j = 0 ; int i = 0;
+ 
+// for (int j = 0; j < HuffmanUtils.encoded_lines.size(); j++) {
 
-        for (int j = 0; j < HuffmanUtils.encoded_lines.size(); j++) {
-
-            String encoded = HuffmanUtils.encoded_lines.get(j);
-            for (int i = 0; i < encoded.length(); i += 8) {
-                if (i + 8 < encoded.length()) {
+String encoded = HuffmanUtils.encoded_lines.get(j);
+while(j<HuffmanUtils.encoded_lines.size()){
+            
+          //  for (int i = 0; i < encoded.length(); i += 8) {
+          while(i<encoded.length()){  
+          if (i + 8 <encoded.length()) {
 
                     temp_string = encoded.substring(i, i + 8);
+                   
+                     
+                } 
+          
+          else if(i+8==encoded.length())
+          {
+              temp_string = encoded.substring(i, i + 8);
+            j++;
+                     encoded = HuffmanUtils.encoded_lines.get(j);
+                     i=0;///////
+          }
+     
+              else{
+              
+              
+              j++;
+              if(j>=HuffmanUtils.encoded_lines.size()) {
+                   temp_string = encoded.substring(i, i + 8);
+                   while(temp_string.length()<8) temp_string="0"+temp_string;
+                   GOTO write;
+              }
+               temp_string = encoded.substring(i);
+               
+              encoded = HuffmanUtils.encoded_lines.get(j);
+              temp_string = temp_string + encoded.substring(0,8-temp_string.length());
+              i=8-temp_string.length();
+              
+              }
+                    
+                    
 
-                } else {
-                    temp_string = encoded.substring(i);
-                    while (temp_string.length() < 8 ) {
-                        temp_string = "0" + temp_string;
-                    }
-
-                }
-
+                
+          wirte:
                 temp_int = Integer.parseInt(temp_string, 2);
 
                 temp_byte = (byte) temp_int;
              
                 out.write(temp_byte);
+                
+                
 
             }
 
