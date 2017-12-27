@@ -9,12 +9,15 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import static java.lang.System.in;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.binding.StringBinding;
 
 public class HuffmanUtils {
 
@@ -22,6 +25,7 @@ public class HuffmanUtils {
     static String[] codes = new String[128];
     static int encodedSize = 0;
     static public ArrayList<String> encoded_lines = new ArrayList<String>();
+    static     ArrayList<String> Y= new ArrayList<String>();//new array list for the characters encoded
 
     // else if (count >= 16) {
 //            if (count % 16 == 0) {
@@ -45,7 +49,7 @@ public class HuffmanUtils {
 //        } else if (count >= 8) {
 //            if (count % 8 == 0) {
 //                 HuffmanUtils.encoded_lines.add(encodedLine);
-//            } else {
+//            } -else {
 //                newEncodedLine = encodedLine.substring(0, 8);
 //                extra = encodedLine.substring(8, encodedLine.length());
 //                  HuffmanUtils.encoded_lines.add(newEncodedLine);
@@ -163,7 +167,7 @@ public class HuffmanUtils {
                         digit++;
 
                     }
-                } else {
+                } else if(buffer==28){
                     keyorvalue = !keyorvalue;
                     ReadFile.frequencies[key] = value;
 
@@ -175,14 +179,16 @@ public class HuffmanUtils {
         }
 
         applyHuffman();
+       printDecoded();
+       
         // printFreq();
         try {
             is.close();
         } catch (IOException ex) {
             Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("ORIGINAL SAIZE: " + ReadFile.totalsize);
-        System.out.println("ENCODED SAIZE: " + encodedSize);
+   //     System.out.println("ORIGINAL SAIZE: " + ReadFile.totalsize);
+     //   System.out.println("ENCODED SAIZE: " + encodedSize);
 
     }
 
@@ -206,7 +212,7 @@ public class HuffmanUtils {
         String crunchifyLine;
 
         try (BufferedReader crunchifyBuffer = new BufferedReader(new FileReader(crunchifyFile))) {
-            crunchifyLog("========== File Content ==========");
+         //   crunchifyLog("========== File Content ==========");
 
             // read each line one by one
             while ((crunchifyLine = crunchifyBuffer.readLine()) != null) {
@@ -245,7 +251,7 @@ public class HuffmanUtils {
         }catch (IOException e) {
             e.printStackTrace();
         }
-        decode(encoded_lines);
+        
         }
         
 
@@ -277,13 +283,26 @@ public class HuffmanUtils {
             if (ReadFile.frequencies[i] != 0) {
                 vector.add(new Node(ReadFile.frequencies[i] / ((size) * 1.0), ((char) (i)) + ""));
 
-                System.out.println("'" + ((char) (i)) + "' : " + ReadFile.frequencies[i] / ((size) * 1.0));
+             //   System.out.println("'" + ((char) (i)) + "' : " + ReadFile.frequencies[i] / ((size) * 1.0));
 
             }
         }
 
     }
 
+    static void writeDecoded(String filename) throws IOException{
+        FileWriter fw  = null;
+        try {
+             fw = new FileWriter(filename);
+        } catch (IOException ex) {
+            Logger.getLogger(HuffmanUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for(String s : Y){
+        fw.write(s);
+        }
+    }
+    
+    
     static void buildTree(PriorityQueue<Node> vector) {
 
         while (vector.size() > 1) {
@@ -326,18 +345,23 @@ public class HuffmanUtils {
         buildTree(nodes);
         createCode(nodes.peek(), "");
 
-        printCodes();
+     //   printCodes();
 
-        System.out.println("Decoded Text!");
-        // decodeText();
+       // System.out.println("Decoded Text!");
+        decode(encoded_lines);
 
     }
     
+    static void printDecoded()
+    {   
+        for(String s  : encoded_lines )
+            System.out.print(s);
+    }
+    
       static ArrayList decode(ArrayList x) {
-          ArrayList<String> Y= new ArrayList<String>();//new array list for the characters encoded
-       
+          
         String line = "";
-        String temp = "";
+          StringBuilder temp = new StringBuilder();
         int size_of_string=1000;
         Node n = nodes.peek();
         //loop on the arraylist
@@ -355,13 +379,13 @@ public class HuffmanUtils {
                 }
                if (n.isLeaf()) {
                   
-                     temp = temp + n.character;
+                     temp.append(n.character) ;
                      
                      if(temp.length()>=size_of_string)
                      {
                         
-                       Y.add(temp);
-                       temp="";
+                       Y.add(temp.toString());
+                       temp=new StringBuilder();
                      }
                        
                     n = nodes.peek();
@@ -369,9 +393,9 @@ public class HuffmanUtils {
             }
 
         }
-        Y.add(temp);
-        System.out.println("Size OF ARAY DECODED LIST IS: "+Y.size());
-        printList(Y);
+        Y.add(temp.toString());
+   //     System.out.println("Size OF ARAY DECODED LIST IS: "+Y.size());
+     //   printList(Y);
         
                  return(Y);
     }

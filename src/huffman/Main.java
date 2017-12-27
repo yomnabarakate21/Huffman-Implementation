@@ -64,6 +64,9 @@ public class Main {
             System.out.println("Enter file name to be decompressed.");
             filename = scanner.next();
             HuffmanUtils.readEncodedFile(filename);
+            System.out.println("Enter file name to be saved in.");
+            filename = scanner.next();
+            HuffmanUtils.writeDecoded(filename);
         } else if (n == 3) {
         }
     }

@@ -30,7 +30,7 @@ public class WriteBinaryUtils {
                     String s = Integer.toString(ReadFile.frequencies[j]);
                     //write the letter
                     out.write((char) j);
-                    if (s.length() < 4) {
+                   
                         for (int i = s.length() - 1; i >= 0; i--) {
                             if (s.charAt(i) == '2') {
                                 temp_s = "00000010";
@@ -60,9 +60,10 @@ public class WriteBinaryUtils {
 
                         }
 
-                    }
-                    out.write((char) 28);
+                    
+                         out.write((char) 28);
                 }
+          
 
             }
             out.close();
@@ -116,7 +117,7 @@ public class WriteBinaryUtils {
             
         try {
 
-            System.out.println("SIZE OF THE ENCODED  " + size);
+           // System.out.println("SIZE OF THE ENCODED  " + size);
             OutputStream out = new FileOutputStream(filename);
             byte x = (byte) (size / Math.pow(2, 24));
             out.write(x);
@@ -127,7 +128,7 @@ public class WriteBinaryUtils {
             x = (byte) size;
             out.write(x);
 
-            System.out.println("SIZE OF THE ORIGINAL " + ReadFile.totalsize);
+          //  System.out.println("SIZE OF THE ORIGINAL " + ReadFile.totalsize);
             x = (byte) (ReadFile.totalsize / Math.pow(2, 24));
             out.write(x);
             x = (byte) (ReadFile.totalsize / Math.pow(2, 16));
@@ -141,7 +142,8 @@ public class WriteBinaryUtils {
         catch (IOException ex) {
             ex.printStackTrace();
             System.err.println(ex);
-            Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
+
+       Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
