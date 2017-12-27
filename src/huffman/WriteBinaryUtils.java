@@ -111,7 +111,7 @@ public class WriteBinaryUtils {
     static void writeHeader(String filename) {
 
         
-        int size = (int) Math.ceil(HuffmanUtils.encodedSize/8.0);
+        int size = (int) Math.ceil(HuffmanUtils.get_encoded_size(HuffmanUtils.encoded_lines)/8.0);
         
             
         try {

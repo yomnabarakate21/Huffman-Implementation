@@ -56,7 +56,7 @@ public class Main {
             HuffmanUtils.printCodes();
             HuffmanUtils.encodeFile(filename);
                      for (int i = 0; i < HuffmanUtils.encoded_lines.size(); i++) {
-            System.out.println("This is the zft el teeen array "+HuffmanUtils.encoded_lines.get(i));
+            System.out.println(HuffmanUtils.encoded_lines.get(i));
          }
             WriteBinaryUtils.writeFile("new.bin");
 

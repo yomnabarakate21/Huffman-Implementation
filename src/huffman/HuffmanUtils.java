@@ -58,7 +58,7 @@ public class HuffmanUtils {
         String encodedLine = pre + encodedLineGiven;
         String newEncodedLine = "";
         String extra = "";                //ALELTYYYYYYYYYYY EL ARKAAAAAAAAM !!!!!
-        if (count >= 8) {
+        if (count >= 8) {  
             if (count == 8) {
                 HuffmanUtils.encoded_lines.add(encodedLine);
                 extra = "";
@@ -75,7 +75,16 @@ public class HuffmanUtils {
         return extra;
 
     }
-
+    
+    public static int get_encoded_size(ArrayList encoded_lines)
+    {
+        int count=0;
+        for(int i=0;i<encoded_lines.size();i++)
+        {
+            count+=encoded_lines.get(i).toString().length();
+        }
+        return count;
+    }
     //encode text function
     public static void readEncodedFile(String inputfile) {  //leh>
         InputStream is = null;
@@ -236,6 +245,7 @@ public class HuffmanUtils {
         }catch (IOException e) {
             e.printStackTrace();
         }
+        decode(encoded_lines);
         }
         
 
@@ -322,5 +332,57 @@ public class HuffmanUtils {
         // decodeText();
 
     }
+    
+      static ArrayList decode(ArrayList x) {
+          ArrayList<String> Y= new ArrayList<String>();//new array list for the characters encoded
+       
+        String line = "";
+        String temp = "";
+        int size_of_string=1000;
+        Node n = nodes.peek();
+        //loop on the arraylist
+        for (int i = 0; i < x.size(); i++) {
+            line = x.get(i).toString();
+          
+            for (int j = 0; j < line.length(); j++) {
+              
+                if (Character.toString(line.charAt(j)).equals("0")) {
+                    
+                    n = n.left;
+                } else if (Character.toString(line.charAt(j)).equals("1")) {
+               
+                    n = n.right;
+                }
+               if (n.isLeaf()) {
+                  
+                     temp = temp + n.character;
+                     
+                     if(temp.length()>=size_of_string)
+                     {
+                        
+                       Y.add(temp);
+                       temp="";
+                     }
+                       
+                    n = nodes.peek();
+                }  
+            }
 
+        }
+        Y.add(temp);
+        System.out.println("Size OF ARAY DECODED LIST IS: "+Y.size());
+        printList(Y);
+        
+                 return(Y);
+    }
+      
+      static void printList(ArrayList x) {
+        
+         for (int i = 0; i < x.size(); i++) {
+             // System.out.println( "hello");
+            System.out.println( x.get(i).toString());
+        
+    }
+
+      }
 }
