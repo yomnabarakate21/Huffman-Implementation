@@ -67,8 +67,10 @@ flag = false;
             System.out.println("Enter file name to be compressed.");
 
             filename = scanner.next();
+
            encode(filename);
                    
+        
 
         } else if (n == 2) {
             System.out.println("Enter file name to be decompressed.");
@@ -78,8 +80,10 @@ flag = false;
             System.out.println("Enter file name to be saved in.");
             filename = scanner.next();
             HuffmanUtils.writeDecoded(filename);
-        } else if (n == 3) {
-            folder = true;
+        } 
+        
+        else if (n == 3) {
+            flag = true;
             System.out.println("Enter file name to be decompressed.");
             filename = scanner.next();
              File file = new File(filename);
