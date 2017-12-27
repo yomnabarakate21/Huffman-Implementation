@@ -179,7 +179,7 @@ public class HuffmanUtils {
         }
 
         applyHuffman();
-       printDecoded();
+   //    printDecoded();
        
         // printFreq();
         try {
@@ -208,6 +208,7 @@ public class HuffmanUtils {
 
         int crunchifyTotalLines = 0;
         int crunchifyTotalCharacters = 0;
+        StringBuilder cs = new StringBuilder();
         String previous = "";
         String crunchifyLine;
 
@@ -216,13 +217,16 @@ public class HuffmanUtils {
 
             // read each line one by one
             while ((crunchifyLine = crunchifyBuffer.readLine()) != null) {
-
+  cs = new StringBuilder(crunchifyLine);
                 crunchifyTotalLines++;
                 //if last line don't add a new line character.
                 if (ReadFile.totalLine != crunchifyTotalLines) {
-                    crunchifyLine = crunchifyLine + (char) 10;
+                    
+                    cs.append((char)10);
+                   
                 }
-                String code = encodeText(crunchifyLine);
+                
+                String code = encodeText(cs.toString());
                 previous = HuffmanUtils.adjustSize(previous, code);
 
             }
