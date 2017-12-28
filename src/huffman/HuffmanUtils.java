@@ -26,6 +26,7 @@ public class HuffmanUtils {
     static int encodedSize = 0;
     static public ArrayList<String> encoded_lines = new ArrayList<String>();
     static ArrayList<String> Y = new ArrayList<String>();//new array list for the characters encoded
+    public static int total_encoded = 0;
 
     public static String adjustSize(String pre, String encodedLineGiven) {
         int count = encodedLineGiven.length() + pre.length();
@@ -61,10 +62,8 @@ public class HuffmanUtils {
     //encode text function
     public static void readEncodedFile(String inputfile) {  //leh>
         InputStream is = null;
+        int file_number = 0;
 
-        Byte[] temp_key_array = null;
-        String[] temp_value_array = null;
-        char temp_key = ' ';
         try {
             is = new FileInputStream(inputfile);
 
@@ -78,28 +77,37 @@ public class HuffmanUtils {
         StringBuilder sb = new StringBuilder();
         int value = 0, key = 0;
         byte buffer;
-
+        total_encoded = 0;
         encodedSize = 0;
+        int remaining = 9999;
         init_freq();
         int digit = 0;
 
         try {
             while (true) {
                 buffer = (byte) is.read();
-                if (byte_counter < 4) {
 
-                    encodedSize += Byte.toUnsignedInt(buffer) * (int) Math.pow(2, ((3 - byte_counter) * 8));
+                if (file_number == 0 && byte_counter < 4 && remaining > 0) {
+                    total_encoded += Byte.toUnsignedInt(buffer) * (int) Math.pow(2, ((3 - byte_counter) * 8));
+                    byte_counter++;
+                } else if (byte_counter < 4 && remaining > 0) {
+                    if (file_number == -1) {
+                        file_number = 1;
+                        remaining = total_encoded;
+                    } else {
+                        encodedSize += Byte.toUnsignedInt(buffer) * (int) Math.pow(2, ((3 - byte_counter) * 8));
+                    }
 
                     byte_counter++;
 
-                } else if (byte_counter < 8) {
+                } else if (byte_counter < 8 && remaining > 0 && file_number == 1) {
 
                     ReadFile.totalsize += Byte.toUnsignedInt(buffer) * (int) Math.pow(2, ((3 - (byte_counter - 4)) * 8));
 
                     byte_counter++;
 
                     //read encoded text
-                } else if (encoded_counter < encodedSize) {
+                } else if (encoded_counter < encodedSize && remaining > 0) {
 
                     String temp = Integer.toBinaryString(Byte.toUnsignedInt(buffer));
 
@@ -117,7 +125,7 @@ public class HuffmanUtils {
                     }
                     encoded_counter++;
 
-                } else if (buffer != 28) {
+                } else if (buffer != 28 && remaining == 0) {
                     if (sb.length() > 0) {
                         encoded_lines.add(sb.toString());
                         sb = new StringBuilder();
@@ -141,7 +149,23 @@ public class HuffmanUtils {
                     ReadFile.frequencies[key] = value;
 
                 }
+                if (file_number == 0 && byte_counter == 4) {
+                    byte_counter = 0;
+                    file_number = -1;
+                }
 
+                if (encoded_counter == encodedSize && encodedSize > 0) {
+                    encoded_counter = 0;
+                    file_number++;
+                    byte_counter = 0;
+                    remaining -= encodedSize;
+                    
+                    encodedSize = 0;
+                    if(sb.length()>0){
+                    encoded_lines.add(sb.toString());
+                    encoded_lines.add("a");
+                    sb = new StringBuilder();
+                }}
             }
         } catch (IOException ex) {
             Logger.getLogger(Huffman.class.getName()).log(Level.SEVERE, null, ex);
@@ -179,7 +203,7 @@ public class HuffmanUtils {
         StringBuilder cs = new StringBuilder();
         String previous = "";
         String crunchifyLine;
-encoded_lines = new ArrayList<String>();
+        encoded_lines = new ArrayList<String>();
         try (BufferedReader crunchifyBuffer = new BufferedReader(new FileReader(crunchifyFile))) {
             //   crunchifyLog("========== File Content ==========");
 
@@ -259,6 +283,7 @@ encoded_lines = new ArrayList<String>();
     }
 
     static void writeDecoded(String filename) throws IOException {
+        
         FileWriter fw = null;
         try {
 
@@ -272,6 +297,25 @@ encoded_lines = new ArrayList<String>();
         fw.close();
     }
 
+     static void writeDecoded(String filename,int j) throws IOException {
+        int i = 1;
+        FileWriter fw = null;
+      
+        for (String s : Y) {
+            
+            if(s.equals("a")||i==1)
+            {
+                if(fw!=null)
+                fw.close();
+            fw =new FileWriter(filename+"/"+i+".txt"); i++;
+            }
+            if(!s.equals("a"))
+            fw.write(s);
+        }
+        fw.close();
+    }
+
+    
     static void buildTree(PriorityQueue<Node> vector) {
 
         while (vector.size() > 1) {
@@ -308,7 +352,7 @@ encoded_lines = new ArrayList<String>();
     }
 
     static void applyHuffman() {
-
+       
         // init_codes_array();
         calc_frequencies_percnt(nodes, ReadFile.totalsize);
         buildTree(nodes);
@@ -334,6 +378,12 @@ encoded_lines = new ArrayList<String>();
         Node n = nodes.peek();
         //loop on the arraylist
         for (int i = 0; i < x.size(); i++) {
+            if(x.get(i).equals("a")) 
+            {
+                Y.add(temp.toString());
+                Y.add("a");
+            temp=new StringBuilder();
+            continue;}
             line = x.get(i).toString();
 
             for (int j = 0; j < line.length(); j++) {
@@ -357,10 +407,11 @@ encoded_lines = new ArrayList<String>();
 
                     n = nodes.peek();
                 }
-            }
+            } 
 
         }
         Y.add(temp.toString());
+        
         //     System.out.println("Size OF ARAY DECODED LIST IS: "+Y.size());
         //   printList(Y);
 

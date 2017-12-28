@@ -9,17 +9,21 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 public class WriteBinaryUtils {
 
+   
+    
     //write the size of each if the encoded and the original text in the header of the binary file.
     public static void writeFreq(String filename) throws FileNotFoundException {
 
         int temp_int;
         int temp_byte;
+        
 
         try {
             OutputStream out = new FileOutputStream(filename, true);
@@ -113,6 +117,7 @@ public class WriteBinaryUtils {
 
         
         int size = (int) Math.ceil(HuffmanUtils.get_encoded_size(HuffmanUtils.encoded_lines)/8.0);
+        HuffmanUtils.total_encoded += size;
              // int size = (1024*(HuffmanUtils.encoded_lines.size()-1))+HuffmanUtils.encoded_lines.get(HuffmanUtils.encoded_lines.size()-1).length();
        
          //size =(int) Math.ceil(size/8);
@@ -122,7 +127,18 @@ public class WriteBinaryUtils {
 
            // System.out.println("SIZE OF THE ENCODED  " + size);
              out= new FileOutputStream(filename,Main.flag);
-            byte x = (byte) (size / Math.pow(2, 24));
+             
+             if(Main.flag==false){
+             out.write(0);
+             out.write(0);
+             out.write(0);out.write(0);
+             }
+            
+
+             byte x;
+          //  System.out.println("SIZE OF THE ORIGINAL " + ReadFile.totalsize);
+
+               x = (byte) (size / Math.pow(2, 24));
             out.write(x);
             x = (byte) (size / Math.pow(2, 16));
             out.write(x);
@@ -130,8 +146,6 @@ public class WriteBinaryUtils {
             out.write(x);
             x = (byte) size;
             out.write(x);
-
-          //  System.out.println("SIZE OF THE ORIGINAL " + ReadFile.totalsize);
           if(Main.flag==false){
             x = (byte) (ReadFile.totalsize / Math.pow(2, 24));
             out.write(x);
@@ -140,8 +154,8 @@ public class WriteBinaryUtils {
             x = (byte) (ReadFile.totalsize / Math.pow(2, 8));
             out.write(x);
             x = (byte) ReadFile.totalsize;
-            out.write(x);
-            out.close();}
+            out.write(x);}
+            out.close();
         } //end of the try block
         catch (IOException ex) {
             ex.printStackTrace();
@@ -161,6 +175,7 @@ public class WriteBinaryUtils {
     {
         writeHeader(filename);
         writeEncoded(filename);
+       // HuffmanUtils.encoded_lines= new ArrayList<String>();
     }
     
     public static void writeFolderFreq(String filename) throws IOException{

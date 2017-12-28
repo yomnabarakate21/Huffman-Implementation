@@ -3,6 +3,7 @@ package huffman;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -66,6 +67,19 @@ HuffmanUtils.encodeFile(folder+"/"+name);
         }
 
         WriteBinaryUtils.writeFolderFreq(folder + ".bin");
+        
+        RandomAccessFile rw = new RandomAccessFile(folder + ".bin", "rw");
+        rw.seek(0);
+         byte x = (byte) (HuffmanUtils.total_encoded / Math.pow(2, 24));
+            rw.write(x);
+            x = (byte) (HuffmanUtils.total_encoded / Math.pow(2, 16));
+            rw.write(x);
+            x = (byte) (HuffmanUtils.total_encoded / Math.pow(2, 8));
+            rw.write(x);
+            x = (byte) HuffmanUtils.total_encoded;
+            rw.write(x);
+        
+        rw.close();
     }
 
     public static void encode(String filename) throws IOException {
@@ -107,12 +121,24 @@ HuffmanUtils.encodeFile(folder+"/"+name);
             filename = scanner.next();
             HuffmanUtils.writeDecoded(filename);
         } else if (n == 3) {
-            // flag = true;
-            System.out.println("Enter folder name to be decompressed.");
+        
+            System.out.println("Enter folder name to be compressed.");
             filename = scanner.next();
             encodeFolder(filename);
 
         }
+        else if (n == 4) {
+            // flag = true;
+            System.out.println("Enter folder name to be decompressed.");
+            filename = scanner.next();
+             HuffmanUtils.readEncodedFile(filename);
+               System.out.println("Enter containing folder name .");
+            filename = scanner.next();
+             HuffmanUtils.writeDecoded(filename, 1);
+           
+
+        }
+        else System.out.println("error");
     }
 }
 //        ArrayList<String> encoded_lines = new ArrayList<String>();
