@@ -19,8 +19,8 @@ import java.util.PriorityQueue;
 public class ReadFile {
 
     public static int[] frequencies = new int[128];
-    static int totalsize;
-    static int totalLine;
+    static int totalsize=0;
+    static int totalLine =0 ;
     public static int freqSize=0;
     
 //pass 1 for counting the no of text and getting the freq.
@@ -52,9 +52,9 @@ public class ReadFile {
         crunchifyLog("\n========== Result ==========");
         //remove extra line character and dec size by one.
         frequencies[10]--;
-        totalsize = crunchifyTotalCharacters - 1;
+        totalsize += crunchifyTotalCharacters - 1;
         totalLine = crunchifyTotalLines;
-        crunchifyLog("* Total Characters: " + crunchifyTotalCharacters);
+        crunchifyLog("* Total Characters: " + totalsize);
         crunchifyLog("* Toal Lines: " + crunchifyTotalLines);
     }
 
@@ -77,6 +77,7 @@ public class ReadFile {
     }
 
     public static void Pass1(String filename) {
+       if(Main.flag == false)
         init_freq();
 
         try {

@@ -14,8 +14,7 @@ import java.util.logging.Logger;
  */
 public class Main {
 
-    
-public static boolean flag ;
+    public static boolean flag;
 //    public static String adjustSize(String pre, String encodedLineGiven) {
 //        int count = encodedLineGiven.length() + pre.length();
 //        System.out.println("THis is the zft el count "+count );
@@ -38,29 +37,58 @@ public static boolean flag ;
 //        return extra;
 //
 //    }
-    
-    public static void encode(String filename) throws IOException
-    {
-         ReadFile.Pass1(filename);
-            HuffmanUtils.calc_frequencies_percnt(HuffmanUtils.nodes, ReadFile.totalsize);
-            HuffmanUtils.buildTree(HuffmanUtils.nodes);
-            HuffmanUtils.createCode(HuffmanUtils.nodes.peek(), "");
-            HuffmanUtils.printCodes();
+
+    public static void encodeFolder(String folder) throws IOException {
+        File file = new File(folder);
+        String[] fileList = file.list();
+        int i = 0;
+        for (String name : fileList) {
+            if (i > 0) {
+                flag = true;
+            }
+            ReadFile.Pass1(folder + "/" + name);
+            i++;
+        }
+        i = 0;
+        HuffmanUtils.calc_frequencies_percnt(HuffmanUtils.nodes, ReadFile.totalsize);
+        HuffmanUtils.buildTree(HuffmanUtils.nodes);
+        HuffmanUtils.createCode(HuffmanUtils.nodes.peek(), "");
+        HuffmanUtils.printCodes();
+flag = false;
+        for (String name : fileList) {
+            if (i > 0) {
+                flag = true;
+            }
+HuffmanUtils.encodeFile(folder+"/"+name);
+            WriteBinaryUtils.writeFolder(folder + ".bin");
+
+            i++;
+        }
+
+        WriteBinaryUtils.writeFolderFreq(folder + ".bin");
+    }
+
+    public static void encode(String filename) throws IOException {
+        ReadFile.Pass1(filename);
+        HuffmanUtils.calc_frequencies_percnt(HuffmanUtils.nodes, ReadFile.totalsize);
+        HuffmanUtils.buildTree(HuffmanUtils.nodes);
+        HuffmanUtils.createCode(HuffmanUtils.nodes.peek(), "");
+        HuffmanUtils.printCodes();
         try {
             HuffmanUtils.encodeFile(filename);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-            WriteBinaryUtils.writeFile("new.bin");
+        WriteBinaryUtils.writeFile("new.bin");
     }
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
-flag = false;
+        flag = false;
         System.out.println("1) compress file");
         System.out.println("2) decompress file");
         System.out.println("3) compress folder");
         Scanner scanner = new Scanner(System.in);
-        
+
         int n = scanner.nextInt();
         String filename;
         if (n == 1) {
@@ -68,9 +96,7 @@ flag = false;
 
             filename = scanner.next();
 
-           encode(filename);
-                   
-        
+            encode(filename);
 
         } else if (n == 2) {
             System.out.println("Enter file name to be decompressed.");
@@ -80,17 +106,12 @@ flag = false;
             System.out.println("Enter file name to be saved in.");
             filename = scanner.next();
             HuffmanUtils.writeDecoded(filename);
-        } 
-        
-        else if (n == 3) {
-            flag = true;
-            System.out.println("Enter file name to be decompressed.");
+        } else if (n == 3) {
+            // flag = true;
+            System.out.println("Enter folder name to be decompressed.");
             filename = scanner.next();
-             File file = new File(filename);
-        String[] fileList = file.list();
-        for(String name:fileList){
-            encode(name);
-        }
+            encodeFolder(filename);
+
         }
     }
 }
